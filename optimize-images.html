@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyClean — Optimizador de Imágenes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; padding: 40px; }
+        h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+        .subtitle { color: #94a3b8; margin-bottom: 32px; }
+        .step { background: #1e293b; border: 1px solid #334155; padding: 24px; margin-bottom: 16px; border-radius: 8px; }
+        .step h2 { font-size: 16px; color: #0ea5e9; margin-bottom: 12px; }
+        .step p { color: #94a3b8; line-height: 1.7; font-size: 14px; }
+        code { background: #0f172a; padding: 2px 8px; border-radius: 4px; font-size: 13px; color: #fbbf24; }
+        pre { background: #0f172a; padding: 16px; border-radius: 6px; margin-top: 12px; overflow-x: auto; font-size: 13px; line-height: 1.6; color: #e2e8f0; }
+        .badge { display: inline-block; background: #0ea5e9; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+        .warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); padding: 16px; border-radius: 8px; margin-top: 24px; }
+        .warning p { color: #fbbf24; }
+        a { color: #0ea5e9; }
+    </style>
+</head>
+<body>
+    <h1>🖼️ SkyClean — Guía de Optimización de Imágenes</h1>
+    <p class="subtitle">Las fotos actuales son de alta resolución (stock UTC). Sigue estos pasos para optimizarlas y acelerar la carga de la web.</p>
+
+    <div class="step">
+        <h2><span class="badge">OPCIÓN A</span> Squoosh (más fácil, sin instalar nada)</h2>
+        <p>Abre <a href="https://squoosh.app" target="_blank">squoosh.app</a> en tu navegador. Arrastra cada imagen, elige <code>WebP</code> con calidad <code>75-80</code> y descárgala. Guárdala en la misma carpeta <code>Udrone/</code> con extensión <code>.webp</code>.</p>
+    </div>
+
+    <div class="step">
+        <h2><span class="badge">OPCIÓN B</span> Comando rápido (si tienes Node.js)</h2>
+        <p>Instala <code>sharp-cli</code> y convierte todas las imágenes de golpe:</p>
+        <pre>
+cd C:\Users\amber\Desktop\SkyCleanPremium
+
+npx sharp-cli --input "Udrone/*.jpg" --output "Udrone/optimized/" --format webp --quality 78 --resize 1920
+npx sharp-cli --input "Udrone/*.JPG" --output "Udrone/optimized/" --format webp --quality 78 --resize 1920</pre>
+        <p style="margin-top:8px;">Esto creará versiones WebP de max 1920px de ancho con ~78% calidad — perfecto para web.</p>
+    </div>
+
+    <div class="step">
+        <h2><span class="badge">OPCIÓN C</span> Python (si tienes Python instalado)</h2>
+        <pre>
+pip install Pillow
+
+python -c "
+from PIL import Image
+import glob, os
+
+os.makedirs('Udrone/optimized', exist_ok=True)
+for f in glob.glob('Udrone/*.jpg') + glob.glob('Udrone/*.JPG'):
+    img = Image.open(f)
+    img.thumbnail((1920, 1920), Image.LANCZOS)
+    name = os.path.splitext(os.path.basename(f))[0]
+    img.save(f'Udrone/optimized/{name}.webp', 'webp', quality=78)
+    old_size = os.path.getsize(f) / 1024
+    new_size = os.path.getsize(f'Udrone/optimized/{name}.webp') / 1024
+    print(f'{name}: {old_size:.0f}KB -> {new_size:.0f}KB ({(1-new_size/old_size)*100:.0f}% smaller)')
+"</pre>
+    </div>
+
+    <div class="step">
+        <h2><span class="badge">DESPUÉS</span> Actualizar index.html</h2>
+        <p>Una vez optimizadas, cambia las rutas en <code>index.html</code>. Por ejemplo:</p>
+        <pre>
+<!-- ANTES -->
+&lt;img src="Udrone/close-up-of-a-surveillance-drone...utc.jpg"&gt;
+
+<!-- DESPUÉS -->
+&lt;img src="Udrone/optimized/close-up-of-a-surveillance-drone...utc.webp"&gt;</pre>
+        <p style="margin-top:8px;">O usa <code>&lt;picture&gt;</code> para compatibilidad total:</p>
+        <pre>
+&lt;picture&gt;
+  &lt;source srcset="Udrone/optimized/close-up...webp" type="image/webp"&gt;
+  &lt;img src="Udrone/close-up...jpg" alt="..."&gt;
+&lt;/picture&gt;</pre>
+    </div>
+
+    <div class="step">
+        <h2>📊 Impacto esperado</h2>
+        <p>
+            <strong>Antes:</strong> ~70-100 MB de imágenes (13 fotos stock UTC sin comprimir)<br>
+            <strong>Después:</strong> ~5-8 MB total (WebP 78% calidad, max 1920px)<br>
+            <strong>Mejora:</strong> ~90% menos de peso → carga 10x más rápida
+        </p>
+    </div>
+
+    <div class="warning">
+        <p>⚡ <strong>Tip:</strong> La imagen del Hero es la más crítica. Si solo optimizas una, que sea: <code>close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.jpg</code></p>
+    </div>
+</body>
+</html>
