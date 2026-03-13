@@ -1474,12 +1474,7 @@
             justify-content: center;
             z-index: 2;
             letter-spacing: 1px;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* Old .visible trigger — now handled by .revealed below */
 
         .service-card-body {
             padding: 28px 0 0;
@@ -1500,13 +1495,7 @@
             line-height: 1.8;
         }
 
-        /* Service card reveal — handled by [data-reveal] system */
-
-        /* Service number badge — reveals with parent card */
-        .service-card.revealed .service-number {
-            opacity: 1;
-            transform: scale(1);
-        }
+        /* Service cards — always visible, no scroll animation */
 
         /* Responsive services */
         @media (max-width: 991px) {
@@ -5060,7 +5049,7 @@
 
             <div class="services-grid">
                 <!-- Service 01 — Mycie dachów -->
-                <div class="service-card" data-reveal="up" data-stagger="3">
+                <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
                             <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.jpg" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="lazy" decoding="async">
@@ -5074,7 +5063,7 @@
                 </div>
 
                 <!-- Service 02 — Mycie fotowoltaiki -->
-                <div class="service-card" data-reveal="up" data-stagger="4">
+                <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
                             <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.jpg" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="lazy" decoding="async">
@@ -5088,7 +5077,7 @@
                 </div>
 
                 <!-- Service 03 — Mycie elewacji -->
-                <div class="service-card" data-reveal="up" data-stagger="5">
+                <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
                             <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.jpg" alt="Mycie elewacji budynków dronem — SkyClean" loading="lazy" decoding="async">
