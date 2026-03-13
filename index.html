@@ -24,7 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Preload critical hero image -->
-    <link rel="preload" as="image" href="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.jpg" fetchpriority="high">
+    <link rel="preload" as="video" href="video-hero.mp4" type="video/mp4">
     <link rel="preload" as="image" href="Udrone/Udrone HTML/images/misc/2.webp">
 
     <!-- Lucide Icons (deferred) -->
@@ -104,13 +104,15 @@
             transition: opacity 0.4s ease;
         }
 
-        /* GPU-accelerated image containers */
+        /* GPU-accelerated image/video containers */
         .hero-bg img,
+        .hero-bg video,
         .service-card-image img,
         .about-mosaic img,
         .project-card img,
         .industry-card-image img,
-        .vs-bg img {
+        .vs-bg img,
+        .vs-bg video {
             will-change: transform;
             transform: translateZ(0);
             -webkit-backface-visibility: hidden;
@@ -1172,12 +1174,18 @@
             z-index: 1;
         }
 
-        .hero-bg img {
+        .hero-bg img,
+        .hero-bg video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             opacity: 0.35;
             filter: brightness(0.6);
+        }
+
+        .hero-bg video {
+            opacity: 0.45;
+            filter: brightness(0.5) saturate(1.1);
         }
 
         .hero-bg::after {
@@ -2058,13 +2066,21 @@
             z-index: 1;
         }
 
-        .vs-bg img {
+        .vs-bg img,
+        .vs-bg video {
             width: 100%;
             height: 120%;
             object-fit: cover;
             opacity: 0.3;
             filter: brightness(0.5);
             transform: translateY(-10%);
+        }
+
+        .vs-bg video {
+            opacity: 0.4;
+            filter: brightness(0.45) saturate(1.15);
+            height: 100%;
+            transform: none;
         }
 
         .vs-bg::after {
@@ -4658,9 +4674,14 @@
     <!-- HERO SECTION                                        -->
     <!-- ================================================== -->
     <section class="hero" id="hero">
-        <!-- Background image -->
+        <!-- Background video with image fallback -->
         <div class="hero-bg">
-            <img src="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.jpg" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" fetchpriority="high" decoding="sync" width="1920" height="1280">
+            <video autoplay muted loop playsinline preload="auto" poster="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.jpg">
+                <source src="video-hero.mp4" type="video/mp4">
+            </video>
+            <noscript>
+                <img src="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.jpg" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280">
+            </noscript>
         </div>
 
         <!-- Main content -->
@@ -5059,9 +5080,14 @@
     <!-- VISUAL STATEMENT SECTION                            -->
     <!-- ================================================== -->
     <section class="visual-statement">
-        <!-- Parallax background -->
+        <!-- Parallax background — cinematic video -->
         <div class="vs-bg">
-            <img src="Udrone/iot-smart-agriculture-industry-concept-drone-in-p-2026-01-08-23-40-27-utc.jpg" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async">
+            <video autoplay muted loop playsinline preload="none" poster="Udrone/iot-smart-agriculture-industry-concept-drone-in-p-2026-01-08-23-40-27-utc.jpg">
+                <source src="video-aerial.mp4" type="video/mp4">
+            </video>
+            <noscript>
+                <img src="Udrone/iot-smart-agriculture-industry-concept-drone-in-p-2026-01-08-23-40-27-utc.jpg" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async">
+            </noscript>
         </div>
 
         <!-- Giant typography content -->
@@ -6267,9 +6293,9 @@
             counterObserver.observe(stat);
         });
 
-        // Parallax effect for vs-bg
+        // Parallax effect for vs-bg (supports video or img)
         window.addEventListener('scroll', () => {
-            const vsBg = document.querySelector('.vs-bg img');
+            const vsBg = document.querySelector('.vs-bg video') || document.querySelector('.vs-bg img');
             if (vsBg) {
                 const section = document.querySelector('.visual-statement');
                 const rect = section.getBoundingClientRect();
