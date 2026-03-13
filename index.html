@@ -221,27 +221,7 @@
             transition: filter 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Section headers — subtle blur-in for premium feel */
-        .section-header [data-reveal],
-        .hiw-header [data-reveal],
-        .industries-header [data-reveal],
-        .testimonials-info [data-reveal],
-        .sa-header [data-reveal],
-        .calc-label[data-reveal],
-        .contact-label[data-reveal] {
-            filter: blur(4px);
-            transition-duration: 1.3s;
-        }
-
-        .section-header [data-reveal].revealed,
-        .hiw-header [data-reveal].revealed,
-        .industries-header [data-reveal].revealed,
-        .testimonials-info [data-reveal].revealed,
-        .sa-header [data-reveal].revealed,
-        .calc-label[data-reveal].revealed,
-        .contact-label[data-reveal].revealed {
-            filter: blur(0);
-        }
+        /* Section headers — clean fade, no blur (avoids layout reflow) */
 
         /* Reduce motion for accessibility */
         @media (prefers-reduced-motion: reduce) {
@@ -681,29 +661,33 @@
         /* Close button */
         .popup-close {
             position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-subtle);
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: var(--text-tertiary);
+            color: white;
             transition: all 0.3s ease;
-            z-index: 2;
+            z-index: 10;
         }
 
         .popup-close:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: rgba(239, 68, 68, 0.8);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: scale(1.1);
         }
 
         .popup-close svg {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
         }
 
         /* Popup image area */
@@ -5171,8 +5155,8 @@
     <section class="services" id="uslugi">
         <div class="container">
             <div class="section-header">
-                <div class="section-subtitle" data-reveal="blur" data-stagger="1">Nasze usługi</div>
-                <h2 class="section-title" data-reveal="blur" data-stagger="2"><span class="accent">Profesjonalne</span> i <span class="accent">bezpieczne</span> mycie z powietrza</h2>
+                <div class="section-subtitle" data-reveal="fade">Nasze usługi</div>
+                <h2 class="section-title" data-reveal="fade"><span class="accent">Profesjonalne</span> i <span class="accent">bezpieczne</span> mycie z powietrza</h2>
             </div>
 
             <div class="services-grid">
@@ -5441,8 +5425,8 @@
     <section class="projects" id="realizacje">
         <div class="container">
             <div class="section-header">
-                <div class="section-subtitle" data-reveal="blur" data-stagger="1">Realizacje</div>
-                <h2 class="section-title" data-reveal="blur" data-stagger="2">Nasze <span class="accent">ostatnie</span> projekty</h2>
+                <div class="section-subtitle" data-reveal="fade">Realizacje</div>
+                <h2 class="section-title" data-reveal="fade">Nasze <span class="accent">ostatnie</span> projekty</h2>
             </div>
 
             <div class="projects-grid">
@@ -5586,8 +5570,8 @@
             <!-- Header with nav arrows -->
             <div class="industries-header">
                 <div class="industries-header-left">
-                    <div class="industries-label" data-reveal="blur" data-stagger="1">Branże</div>
-                    <h2 class="industries-title" data-reveal="blur" data-stagger="2">OBSŁUGUJEMY <span>KAŻDĄ</span> BRANŻĘ</h2>
+                    <div class="industries-label" data-reveal="fade">Branże</div>
+                    <h2 class="industries-title" data-reveal="fade">OBSŁUGUJEMY <span>KAŻDĄ</span> BRANŻĘ</h2>
                 </div>
                 <div class="industries-nav">
                     <button class="industries-nav-btn" id="indPrev" aria-label="Poprzedni">
@@ -5724,8 +5708,8 @@
 
                 <!-- Left — Info -->
                 <div class="testimonials-info" data-reveal="left">
-                    <div class="testimonials-label" data-reveal="blur" data-stagger="1">Opinie</div>
-                    <h2 class="testimonials-title" data-reveal="blur" data-stagger="2">CO MÓWIĄ <span>NASI KLIENCI</span></h2>
+                    <div class="testimonials-label" data-reveal="fade">Opinie</div>
+                    <h2 class="testimonials-title" data-reveal="fade">CO MÓWIĄ <span>NASI KLIENCI</span></h2>
                     <p class="testimonials-subtitle">Zaufało nam ponad 50 firm i właścicieli nieruchomości w Wielkopolsce. Każdy projekt kończymy z pełnym zadowoleniem klienta.</p>
 
                     <!-- Google Rating Badge -->
@@ -5917,8 +5901,8 @@
     <section class="how-it-works" id="jak-to-dziala">
         <div class="container">
             <div class="hiw-header">
-                <div class="hiw-label" data-reveal="blur" data-stagger="1">Proces</div>
-                <h2 class="hiw-title" data-reveal="blur" data-stagger="2">JAK <span>DZIAŁAMY</span></h2>
+                <div class="hiw-label" data-reveal="fade">Proces</div>
+                <h2 class="hiw-title" data-reveal="fade">JAK <span>DZIAŁAMY</span></h2>
             </div>
 
             <div class="hiw-steps">
@@ -6002,8 +5986,8 @@
 
                 <!-- Left — Info -->
                 <div class="calc-info" data-reveal="left">
-                    <div class="calc-label" data-reveal="blur" data-stagger="1">Kalkulator</div>
-                    <h2 class="calc-title" data-reveal="blur" data-stagger="2">SPRAWDŹ <span>CENĘ</span> W 30 SEKUND</h2>
+                    <div class="calc-label" data-reveal="fade">Kalkulator</div>
+                    <h2 class="calc-title" data-reveal="fade">SPRAWDŹ <span>CENĘ</span> W 30 SEKUND</h2>
                     <p class="calc-subtitle">Wybierz typ usługi i podaj przybliżoną powierzchnię — automatycznie oszacujemy koszt mycia dronem. Dokładną wycenę otrzymasz po bezpłatnej inspekcji obiektu.</p>
 
                     <div class="calc-features">
@@ -6094,8 +6078,8 @@
     <section class="service-area" id="zasieg">
         <div class="container">
             <div class="sa-header">
-                <div class="sa-label" data-reveal="blur" data-stagger="1">Zasięg</div>
-                <h2 class="sa-title" data-reveal="blur" data-stagger="2">GDZIE <span>DZIAŁAMY</span></h2>
+                <div class="sa-label" data-reveal="fade">Zasięg</div>
+                <h2 class="sa-title" data-reveal="fade">GDZIE <span>DZIAŁAMY</span></h2>
             </div>
 
             <div class="sa-layout">
@@ -6232,8 +6216,8 @@
 
                 <!-- Left — Contact Info -->
                 <div class="contact-info" data-reveal="left">
-                    <div class="contact-label" data-reveal="blur" data-stagger="1">Kontakt</div>
-                    <h2 class="contact-title" data-reveal="blur" data-stagger="2">POROZMAWIAJMY O <span>TWOIM PROJEKCIE</span></h2>
+                    <div class="contact-label" data-reveal="fade">Kontakt</div>
+                    <h2 class="contact-title" data-reveal="fade">POROZMAWIAJMY O <span>TWOIM PROJEKCIE</span></h2>
                     <p class="contact-subtitle">Napisz, zadzwoń lub wyślij wiadomość na WhatsApp. Odpowiadamy w ciągu godziny w godzinach pracy.</p>
 
                     <div class="contact-items">
