@@ -1479,10 +1479,7 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .service-card.visible .service-number {
-            opacity: 1;
-            transform: scale(1);
-        }
+        /* Old .visible trigger — now handled by .revealed below */
 
         .service-card-body {
             padding: 28px 0 0;
@@ -1503,20 +1500,12 @@
             line-height: 1.8;
         }
 
-        /* Service card reveal animation */
-        .service-card {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* Service card reveal — handled by [data-reveal] system */
 
-        .service-card.visible {
+        /* Service number badge — reveals with parent card */
+        .service-card.revealed .service-number {
             opacity: 1;
-            transform: translateY(0);
-        }
-
-        .service-card:nth-child(2).visible {
-            transform: translateY(60px);
+            transform: scale(1);
         }
 
         /* Responsive services */
@@ -1524,12 +1513,6 @@
             .services-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 24px;
-            }
-            .service-card:nth-child(2) {
-                margin-top: 0;
-            }
-            .service-card:nth-child(2).visible {
-                transform: translateY(0);
             }
         }
 
@@ -1807,14 +1790,7 @@
 
         /* About reveal */
         .about-reveal {
-            opacity: 0;
-            transform: translateY(40px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .about-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* Responsive about */
@@ -1864,14 +1840,7 @@
             overflow: hidden;
             aspect-ratio: 3/4;
             cursor: pointer;
-            opacity: 0;
-            transform: translateY(40px);
             transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .project-card.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .project-card img {
@@ -2210,18 +2179,11 @@
             text-align: center;
             padding: 40px 16px;
             border-right: 1px solid var(--border-subtle);
-            opacity: 0;
-            transform: translateY(20px);
             transition: all 0.6s ease;
         }
 
         .vs-stat:last-child {
             border-right: none;
-        }
-
-        .vs-stat.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .vs-stat-number {
@@ -2386,15 +2348,8 @@
             position: relative;
             overflow: hidden;
             border-radius: 0;
-            opacity: 0;
-            transform: translateY(40px);
             transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
                         transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .industry-card.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .industry-card-image {
@@ -2629,14 +2584,7 @@
 
         /* Left Side — Section Info */
         .testimonials-info {
-            opacity: 0;
-            transform: translateX(-30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .testimonials-info.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .testimonials-label {
@@ -2974,15 +2922,8 @@
             padding: 0 24px;
             position: relative;
             z-index: 1;
-            opacity: 0;
-            transform: translateY(40px);
             transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
                         transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hiw-step.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* Step Number Circle */
@@ -3158,14 +3099,7 @@
 
         /* Left — Info */
         .calc-info {
-            opacity: 0;
-            transform: translateX(-30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .calc-info.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .calc-label {
@@ -3260,14 +3194,7 @@
             padding: 40px;
             position: relative;
             overflow: hidden;
-            opacity: 0;
-            transform: translateX(30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-
-        .calc-form.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .calc-form::before {
@@ -3537,14 +3464,7 @@
         /* SVG Map Container */
         .sa-map-container {
             position: relative;
-            opacity: 0;
-            transform: scale(0.95);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sa-map-container.visible {
-            opacity: 1;
-            transform: scale(1);
         }
 
         .sa-map {
@@ -3630,14 +3550,7 @@
 
         /* Right — City List */
         .sa-details {
-            opacity: 0;
-            transform: translateX(30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-
-        .sa-details.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .sa-details-subtitle {
@@ -3786,14 +3699,7 @@
 
         /* Left — Contact Info */
         .contact-info {
-            opacity: 0;
-            transform: translateX(-30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .contact-info.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .contact-label {
@@ -3935,14 +3841,7 @@
             padding: 48px;
             position: relative;
             overflow: hidden;
-            opacity: 0;
-            transform: translateX(30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-
-        .contact-cta-card.visible {
-            opacity: 1;
-            transform: translateX(0);
         }
 
         .contact-cta-card::before {
