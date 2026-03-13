@@ -4312,6 +4312,161 @@
         }
 
         /* ================================================== */
+        /* APP QR POPUP (Itaka-style)                          */
+        /* ================================================== */
+        .nav-app-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+        }
+
+        .nav-app-btn:hover {
+            border-color: var(--sky-blue);
+            color: var(--sky-blue);
+        }
+
+        .nav-app-btn svg {
+            flex-shrink: 0;
+        }
+
+        .app-qr-popup {
+            position: absolute;
+            top: calc(100% + 16px);
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .app-qr-popup::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 24px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 2px;
+            transform: rotate(45deg);
+        }
+
+        .nav-app-btn:hover .app-qr-popup,
+        .app-qr-popup:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .app-qr-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            letter-spacing: 1px;
+            color: #111827;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .app-qr-subtitle {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .app-qr-code {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-qr-code svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .app-qr-label {
+            font-family: var(--font-body);
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-bottom: 16px;
+        }
+
+        .app-store-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .app-store-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #111827;
+            border-radius: 8px;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 10px;
+            line-height: 1.2;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .app-store-btn:hover {
+            background: #1F2937;
+        }
+
+        .app-store-btn span {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-store-btn .store-label {
+            font-size: 8px;
+            opacity: 0.7;
+        }
+
+        .app-store-btn .store-name {
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        @media (max-width: 991px) {
+            .nav-app-btn {
+                display: none;
+            }
+        }
+
+        /* ================================================== */
         /* FLOATING CTA (WhatsApp + Phone)                     */
         /* ================================================== */
         .floating-cta {
@@ -4426,6 +4581,115 @@
             .hero-cta {
                 padding: 14px 28px;
                 font-size: 14px;
+            }
+        }
+
+        /* ================================================== */
+        /* MOBILE FULL-SCREEN POLISH (iOS/Android)             */
+        /* ================================================== */
+
+        /* Smooth scrolling everywhere + iOS bounce fix */
+        html {
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+        }
+
+        /* Safe area padding for notch devices */
+        body {
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* iOS: prevent auto-zoom on input focus */
+        @media (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Mobile video: reduce opacity for readability */
+        @media (max-width: 768px) {
+            .hero-bg video {
+                opacity: 0.3;
+            }
+            .vs-bg video {
+                opacity: 0.25;
+            }
+            /* Hide hero drone image on small screens — video is enough */
+            .hero-drone-wrapper {
+                display: none;
+            }
+            /* Hero takes full viewport */
+            .hero {
+                min-height: 100svh;
+            }
+            .hero-content {
+                padding-top: 100px;
+                padding-bottom: 80px;
+            }
+            .hero-title {
+                font-size: clamp(42px, 11vw, 70px);
+                line-height: 0.95;
+            }
+            .hero-description {
+                font-size: 14px;
+                max-width: 90%;
+            }
+            /* Section spacing tighter on mobile */
+            .services, .about, .projects, .industries,
+            .testimonials, .how-it-works, .calculator,
+            .service-area, .contact {
+                padding: 60px 0;
+            }
+            /* Cards full width */
+            .project-card, .industry-card {
+                width: 100%;
+            }
+            /* VS section mobile */
+            .vs-title {
+                font-size: clamp(36px, 9vw, 60px);
+            }
+            .vs-stats {
+                gap: 20px;
+            }
+            /* Contact section mobile */
+            .contact-grid {
+                gap: 32px;
+            }
+            /* Footer columns stack */
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .hero-title {
+                font-size: 38px;
+            }
+            .hero-subtitle {
+                font-size: 12px;
+            }
+            .section-title {
+                font-size: 28px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Touch-friendly tap targets */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-mobile-links a {
+                padding: 14px 0;
+                min-height: 44px;
+            }
+            .float-btn {
+                min-width: 48px;
+                min-height: 48px;
+            }
+            .hiw-step {
+                padding: 28px 20px;
             }
         }
     </style>
@@ -4652,6 +4916,150 @@
                 <li><a href="#kontakt">Kontakt</a></li>
             </ul>
 
+            <!-- App QR — Itaka-style -->
+            <div class="nav-app-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3"/><path d="M20 14v7h-7"/>
+                </svg>
+                Aplikacja
+
+                <div class="app-qr-popup">
+                    <div class="app-qr-title">Pobierz aplikację</div>
+                    <div class="app-qr-subtitle">Zamów mycie dronem<br>szybciej z telefonu</div>
+
+                    <div class="app-qr-code">
+                        <!-- QR Code SVG — points to skyclean.pl/app -->
+                        <svg viewBox="0 0 37 37" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="37" height="37" fill="white"/>
+                            <!-- Position detection patterns -->
+                            <rect x="1" y="1" width="7" height="7" fill="#111827"/>
+                            <rect x="2" y="2" width="5" height="5" fill="white"/>
+                            <rect x="3" y="3" width="3" height="3" fill="#111827"/>
+                            <rect x="29" y="1" width="7" height="7" fill="#111827"/>
+                            <rect x="30" y="2" width="5" height="5" fill="white"/>
+                            <rect x="31" y="3" width="3" height="3" fill="#111827"/>
+                            <rect x="1" y="29" width="7" height="7" fill="#111827"/>
+                            <rect x="2" y="30" width="5" height="5" fill="white"/>
+                            <rect x="3" y="31" width="3" height="3" fill="#111827"/>
+                            <!-- Data modules — SkyClean branded pattern -->
+                            <rect x="9" y="1" width="1" height="1" fill="#111827"/>
+                            <rect x="11" y="1" width="1" height="1" fill="#111827"/>
+                            <rect x="13" y="2" width="1" height="1" fill="#111827"/>
+                            <rect x="10" y="3" width="1" height="1" fill="#111827"/>
+                            <rect x="12" y="4" width="1" height="1" fill="#111827"/>
+                            <rect x="9" y="5" width="1" height="1" fill="#111827"/>
+                            <rect x="11" y="6" width="1" height="1" fill="#111827"/>
+                            <rect x="13" y="5" width="1" height="1" fill="#111827"/>
+                            <rect x="15" y="2" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="17" y="1" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="19" y="3" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="16" y="4" width="1" height="1" fill="#111827"/>
+                            <rect x="18" y="5" width="1" height="1" fill="#111827"/>
+                            <rect x="20" y="2" width="1" height="1" fill="#111827"/>
+                            <rect x="22" y="1" width="1" height="1" fill="#111827"/>
+                            <rect x="24" y="3" width="1" height="1" fill="#111827"/>
+                            <rect x="21" y="4" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="23" y="6" width="1" height="1" fill="#111827"/>
+                            <rect x="25" y="5" width="1" height="1" fill="#111827"/>
+                            <rect x="27" y="2" width="1" height="1" fill="#111827"/>
+                            <!-- Timing pattern -->
+                            <rect x="9" y="7" width="19" height="1" fill="none"/>
+                            <rect x="9" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="11" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="13" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="15" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="17" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="19" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="21" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="23" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="25" y="7" width="1" height="1" fill="#111827"/>
+                            <rect x="27" y="7" width="1" height="1" fill="#111827"/>
+                            <!-- Middle data area -->
+                            <rect x="1" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="3" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="5" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="7" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="10" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="12" y="10" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="14" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="16" y="10" width="1" height="1" fill="#111827"/>
+                            <rect x="18" y="9" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="20" y="10" width="1" height="1" fill="#111827"/>
+                            <rect x="22" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="24" y="10" width="1" height="1" fill="#111827"/>
+                            <rect x="26" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="29" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="31" y="10" width="1" height="1" fill="#111827"/>
+                            <rect x="33" y="9" width="1" height="1" fill="#111827"/>
+                            <rect x="35" y="10" width="1" height="1" fill="#111827"/>
+                            <!-- More data rows -->
+                            <rect x="9" y="11" width="1" height="1" fill="#111827"/>
+                            <rect x="11" y="12" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="13" y="11" width="1" height="1" fill="#111827"/>
+                            <rect x="15" y="13" width="1" height="1" fill="#111827"/>
+                            <rect x="17" y="12" width="1" height="1" fill="#111827"/>
+                            <rect x="19" y="11" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="21" y="13" width="1" height="1" fill="#111827"/>
+                            <rect x="23" y="12" width="1" height="1" fill="#111827"/>
+                            <rect x="25" y="11" width="1" height="1" fill="#111827"/>
+                            <rect x="27" y="13" width="1" height="1" fill="#111827"/>
+                            <!-- Center branded area -->
+                            <rect x="14" y="14" width="9" height="9" rx="2" fill="#0EA5E9"/>
+                            <rect x="16" y="16" width="5" height="5" rx="1" fill="white"/>
+                            <path d="M17.5 17.5L18.5 17.5L18.5 18.5L19.5 18.5L19.5 19.5L18.5 19.5L18.5 20L17.5 20L17.5 19L18.5 19L18.5 18.5L17.5 18.5Z" fill="#0EA5E9"/>
+                            <!-- Lower data rows -->
+                            <rect x="9" y="25" width="1" height="1" fill="#111827"/>
+                            <rect x="11" y="26" width="1" height="1" fill="#111827"/>
+                            <rect x="13" y="25" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="15" y="27" width="1" height="1" fill="#111827"/>
+                            <rect x="17" y="26" width="1" height="1" fill="#111827"/>
+                            <rect x="19" y="25" width="1" height="1" fill="#111827"/>
+                            <rect x="21" y="27" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="23" y="26" width="1" height="1" fill="#111827"/>
+                            <rect x="25" y="25" width="1" height="1" fill="#111827"/>
+                            <rect x="27" y="27" width="1" height="1" fill="#111827"/>
+                            <rect x="29" y="25" width="1" height="1" fill="#111827"/>
+                            <rect x="31" y="26" width="1" height="1" fill="#111827"/>
+                            <rect x="33" y="25" width="1" height="1" fill="#111827"/>
+                            <rect x="35" y="27" width="1" height="1" fill="#111827"/>
+                            <rect x="10" y="29" width="1" height="1" fill="#111827"/>
+                            <rect x="12" y="30" width="1" height="1" fill="#111827"/>
+                            <rect x="14" y="31" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="16" y="29" width="1" height="1" fill="#111827"/>
+                            <rect x="18" y="32" width="1" height="1" fill="#111827"/>
+                            <rect x="20" y="30" width="1" height="1" fill="#111827"/>
+                            <rect x="22" y="31" width="1" height="1" fill="#0EA5E9"/>
+                            <rect x="24" y="29" width="1" height="1" fill="#111827"/>
+                            <rect x="26" y="32" width="1" height="1" fill="#111827"/>
+                            <rect x="28" y="30" width="1" height="1" fill="#111827"/>
+                            <!-- Alignment pattern -->
+                            <rect x="29" y="29" width="5" height="5" fill="#111827"/>
+                            <rect x="30" y="30" width="3" height="3" fill="white"/>
+                            <rect x="31" y="31" width="1" height="1" fill="#111827"/>
+                        </svg>
+                    </div>
+
+                    <div class="app-qr-label">Zeskanuj kod aparatem</div>
+
+                    <div class="app-store-btns">
+                        <a href="#" class="app-store-btn" onclick="event.preventDefault()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                            <span>
+                                <span class="store-label">Pobierz z</span>
+                                <span class="store-name">App Store</span>
+                            </span>
+                        </a>
+                        <a href="#" class="app-store-btn" onclick="event.preventDefault()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.82c-.37-.38-.57-.96-.57-1.68V1.86c0-.72.2-1.3.57-1.68L3.29.07l10.65 10.65L3.29 21.37l-.11-.11v2.56zm1.44-1.33L15.28 11.83 4.62 1.17v21.32zm12.48-9.66l2.77-1.56c.66-.37 1-1 1-1.54 0-.55-.34-1.17-1-1.54l-2.77-1.56-3.12 3.12 3.12 3.08zm-4.26 1.14L4.62 22.19l12.22-6.88-4-3.34z"/></svg>
+                            <span>
+                                <span class="store-label">Pobierz z</span>
+                                <span class="store-name">Google Play</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="nav-cta desktop" target="_blank">
                 Bezpłatna wycena
             </a>
@@ -4682,10 +5090,16 @@
             <li><a href="#kalkulator" onclick="toggleMobileMenu()">Wycena</a></li>
             <li><a href="#kontakt" onclick="toggleMobileMenu()">Kontakt</a></li>
         </ul>
-        <div style="margin-top: 32px;">
+        <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 12px;">
             <a href="https://wa.me/48727527037" class="nav-cta" target="_blank" style="display:block; text-align:center;">
                 Bezpłatna wycena
             </a>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:1px solid var(--border-subtle); border-radius:10px; color:var(--text-secondary); font-size:13px; font-weight:600; letter-spacing:0.3px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3"/><path d="M20 14v7h-7"/>
+                </svg>
+                Aplikacja — Wkrótce!
+            </div>
         </div>
     </div>
 
