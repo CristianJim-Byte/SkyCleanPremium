@@ -28,8 +28,12 @@ const images = [
   // Industries
   { file: 'Udrone/agricultural-drones-and-agricultural-crops-2026-01-09-00-18-06-utc.webp', maxW: MAX_WIDTH },
   { file: 'Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-07-02-07-42-utc.webp', maxW: MAX_WIDTH },
-  { file: 'Udrone/two-asian-boy-playing-toy-airplane-model-at-home-2026-01-06-11-09-35-utc.webp', maxW: MAX_WIDTH },
 ];
+
+// NOTE: These images are ALREADY optimized and don't need resizing:
+// - Udrone/close-up-redimensionada.webp (180KB — hero background)
+// - Udrone/iot-smart-agriculture-redimensionada.webp (326KB — VS background)
+// - img/hero-drone.webp (38KB — floating drone)
 
 console.log('SkyClean Image Optimizer — Resizing oversized images...\n');
 
