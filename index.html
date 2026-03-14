@@ -97,36 +97,19 @@
             content-visibility: auto;
         }
 
-        /* Image optimization — progressive loading */
+        /* Image loading — smooth fade in when loaded */
         img[loading="lazy"] {
-            background: linear-gradient(135deg, var(--bg-dark-2) 0%, var(--bg-dark-3) 100%);
-            transition: opacity 0.4s ease;
+            background: var(--bg-dark-2);
         }
 
-        /* GPU-accelerated backgrounds only (NOT interactive cards) */
-        .hero-bg img,
+        /* Background media — simple cover */
         .hero-bg video,
-        .vs-bg img,
         .vs-bg video {
-            will-change: transform;
-            transform: translateZ(0);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
 
-        /* Contain paint for off-screen sections (NOT services — causes trackpad scroll issues) */
-        .trust-marquee,
-        .about,
-        .projects,
-        .visual-statement,
-        .industries,
-        .testimonials,
-        .how-it-works,
-        .calculator,
-        .service-area,
-        .contact {
-            contain: layout style paint;
-        }
+        /* No contain — let browser handle scroll naturally */
 
         .container {
             max-width: var(--container-width);
@@ -135,94 +118,62 @@
         }
 
         /* ================================================== */
-        /* SLOW ROLL — UNIVERSAL REVEAL SYSTEM                 */
-        /* Apple/Tesla-style cinematic scroll transitions      */
+        /* SCROLL REVEAL — WOW.js style (UDrone approach)      */
+        /* Elements visible by default. Animation is a bonus.  */
         /* ================================================== */
 
-        /* ── Base reveal — Apple-grade smoothness ── */
-        [data-reveal] {
-            opacity: 0;
-            transition-property: opacity, transform, filter;
-            transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Variant: fade up — gentle float */
-        [data-reveal="up"] {
-            transform: translate3d(0, 36px, 0);
-            transition-duration: 1.4s;
-        }
-
-        /* Variant: fade down */
-        [data-reveal="down"] {
-            transform: translate3d(0, -28px, 0);
-            transition-duration: 1.4s;
-        }
-
-        /* Variant: fade left */
-        [data-reveal="left"] {
-            transform: translate3d(-40px, 0, 0);
-            transition-duration: 1.5s;
-        }
-
-        /* Variant: fade right */
-        [data-reveal="right"] {
-            transform: translate3d(40px, 0, 0);
-            transition-duration: 1.5s;
-        }
-
-        /* Variant: scale up */
-        [data-reveal="scale"] {
-            transform: scale(0.95);
-            transition-duration: 1.6s;
-        }
-
-        /* Variant: blur in (premium) */
-        [data-reveal="blur"] {
-            transform: translate3d(0, 18px, 0);
-            filter: blur(6px);
-            transition-duration: 1.5s;
-        }
-
-        /* Variant: fade only (subtle) */
-        [data-reveal="fade"] {
-            transition-duration: 1.4s;
-        }
-
-        /* ── REVEALED STATE ── */
+        /* Elements with data-reveal are visible by default */
+        /* Animation plays ONCE when .revealed is added */
         [data-reveal].revealed {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) scale(1);
-            filter: blur(0);
+            animation-fill-mode: both;
+            animation-duration: 0.8s;
+            animation-timing-function: ease-out;
         }
 
-        /* Stagger delays — wider intervals for cinematic feel */
-        [data-stagger="1"] { transition-delay: 0.1s; }
-        [data-stagger="2"] { transition-delay: 0.22s; }
-        [data-stagger="3"] { transition-delay: 0.34s; }
-        [data-stagger="4"] { transition-delay: 0.48s; }
-        [data-stagger="5"] { transition-delay: 0.62s; }
-        [data-stagger="6"] { transition-delay: 0.76s; }
-        [data-stagger="7"] { transition-delay: 0.9s; }
-        [data-stagger="8"] { transition-delay: 1.04s; }
+        [data-reveal="up"].revealed    { animation-name: fadeInUp; }
+        [data-reveal="down"].revealed  { animation-name: fadeInUp; }
+        [data-reveal="left"].revealed  { animation-name: fadeInLeft; }
+        [data-reveal="right"].revealed { animation-name: fadeInRight; }
+        [data-reveal="fade"].revealed  { animation-name: fadeIn; }
+        [data-reveal="scale"].revealed { animation-name: fadeInUp; }
+        [data-reveal="blur"].revealed  { animation-name: fadeIn; }
 
-        /* Images inside revealed parents — NO independent animation.
-           They inherit the parent's smooth reveal. */
-        [data-reveal] img {
-            transition: filter 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Stagger delays — simple, clean */
+        [data-stagger="1"].revealed { animation-delay: 0.05s; }
+        [data-stagger="2"].revealed { animation-delay: 0.1s; }
+        [data-stagger="3"].revealed { animation-delay: 0.15s; }
+        [data-stagger="4"].revealed { animation-delay: 0.2s; }
+        [data-stagger="5"].revealed { animation-delay: 0.25s; }
+        [data-stagger="6"].revealed { animation-delay: 0.3s; }
+        [data-stagger="7"].revealed { animation-delay: 0.35s; }
+        [data-stagger="8"].revealed { animation-delay: 0.4s; }
+
+        /* Before reveal — hide but don't break layout */
+        [data-reveal]:not(.revealed) {
+            opacity: 0;
         }
-
-        /* Section headers — clean fade, no blur (avoids layout reflow) */
 
         /* Reduce motion for accessibility */
         @media (prefers-reduced-motion: reduce) {
-            [data-reveal] {
-                transition-duration: 0.01s !important;
-                transform: none !important;
-                filter: none !important;
-            }
+            [data-reveal]:not(.revealed) { opacity: 1; }
+            [data-reveal].revealed { animation: none; }
         }
 
         /* ================================================== */
@@ -404,7 +355,7 @@
         }
 
         .preloader-progress.show {
-            animation: fadeIn 0.4s ease forwards;
+            animation: preloaderFadeIn 0.4s ease forwards;
         }
 
         .preloader-progress-fill {
@@ -427,10 +378,10 @@
         }
 
         .preloader-percent.show {
-            animation: fadeIn 0.4s ease forwards;
+            animation: preloaderFadeIn 0.4s ease forwards;
         }
 
-        @keyframes fadeIn {
+        @keyframes preloaderFadeIn {
             to { opacity: 1; }
         }
 
@@ -1776,9 +1727,6 @@
         }
 
         /* About reveal */
-        .about-reveal {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         /* Responsive about */
         @media (max-width: 991px) {
@@ -1827,7 +1775,6 @@
             overflow: hidden;
             aspect-ratio: 3/4;
             cursor: pointer;
-            transition: opacity 0.7s ease, transform 0.7s ease;
         }
 
         .project-card img {
@@ -2170,7 +2117,6 @@
             text-align: center;
             padding: 40px 16px;
             border-right: 1px solid var(--border-subtle);
-            transition: all 0.6s ease;
         }
 
         .vs-stat:last-child {
@@ -2339,8 +2285,6 @@
             position: relative;
             overflow: hidden;
             border-radius: 0;
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .industry-card-image {
@@ -2578,9 +2522,6 @@
         }
 
         /* Left Side — Section Info */
-        .testimonials-info {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         .testimonials-label {
             display: inline-flex;
@@ -2917,8 +2858,6 @@
             padding: 0 24px;
             position: relative;
             z-index: 1;
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Step Number Circle */
@@ -3093,9 +3032,6 @@
         }
 
         /* Left — Info */
-        .calc-info {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         .calc-label {
             display: inline-flex;
@@ -3189,7 +3125,6 @@
             padding: 40px;
             position: relative;
             overflow: hidden;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
         }
 
         .calc-form::before {
@@ -3457,10 +3392,6 @@
         }
 
         /* SVG Map Container */
-        .sa-map-container {
-            position: relative;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         .sa-map {
             width: 100%;
@@ -3544,9 +3475,6 @@
         }
 
         /* Right — City List */
-        .sa-details {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
 
         .sa-details-subtitle {
             font-size: 15px;
@@ -3693,9 +3621,6 @@
         }
 
         /* Left — Contact Info */
-        .contact-info {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
 
         .contact-label {
             display: inline-flex;
@@ -3836,7 +3761,6 @@
             padding: 48px;
             position: relative;
             overflow: hidden;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
         }
 
         .contact-cta-card::before {
@@ -6563,8 +6487,8 @@
             });
         }
 
-        // ─── Universal Slow-Roll Reveal System (Apple/Tesla grade) ───
-        // Higher threshold + deeper rootMargin = elements reveal when well into viewport
+        // ─── Scroll Reveal (WOW.js style — like UDrone) ───
+        // Simple: observe once, add class, forget.
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -6572,26 +6496,9 @@
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, {
-            threshold: 0.18,
-            rootMargin: '0px 0px -100px 0px'
-        });
+        }, { threshold: 0.1 });
 
-        document.querySelectorAll('[data-reveal]').forEach(el => {
-            revealObserver.observe(el);
-        });
-
-        // Immediately reveal elements already in viewport on page load
-        // (prevents invisible content above the fold after preloader)
-        requestAnimationFrame(() => {
-            document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight * 0.85 && rect.bottom > 0) {
-                    el.classList.add('revealed');
-                    revealObserver.unobserve(el);
-                }
-            });
-        });
+        document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
 
         // Legacy support — VS content reveal
         const vsContent = document.getElementById('vsContent');
