@@ -57,6 +57,10 @@
             /* Spacing */
             --section-padding: 120px;
             --container-width: 1240px;
+
+            /* Smooth easing curves */
+            --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
         }
 
         /* ================================================== */
@@ -70,6 +74,18 @@
 
         html {
             overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         body {
@@ -82,6 +98,8 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            text-rendering: optimizeLegibility;
         }
 
         a {
@@ -104,6 +122,23 @@
         /* Image loading — smooth fade in when loaded */
         img[loading="lazy"] {
             background: var(--bg-dark-2);
+        }
+
+        /* GPU hints for animated elements */
+        [data-reveal],
+        .hero-bg img, .hero-bg video,
+        .vs-bg img, .vs-bg video,
+        .service-card-image img,
+        .service-card-overlay,
+        .project-card img,
+        .project-card-overlay {
+            will-change: transform, opacity;
+        }
+
+        /* Faster tap response on interactive elements */
+        a, button, input, select, textarea,
+        .service-card, .project-card, .industry-card {
+            touch-action: manipulation;
         }
 
         /* Background media — simple cover */
@@ -2015,9 +2050,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.6s var(--ease-smooth);
         }
 
-        /* Hover zoom REMOVED — trackpad scroll jank */
+        .project-card:hover img {
+            transform: scale(1.06);
+        }
 
         /* Bottom gradient — always visible */
         .project-card::after {
@@ -2029,7 +2067,7 @@
             height: 50%;
             background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
             z-index: 1;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.4s var(--ease-out);
         }
 
         .project-card:hover::after {
@@ -2045,7 +2083,7 @@
             z-index: 3;
             padding: 24px;
             text-align: center;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
         }
 
         .project-card:hover .project-card-title {
@@ -5142,7 +5180,7 @@
         <!-- Background video — autoplay muted (Apple approach).
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
-            <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async">
+            <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
             <video autoplay muted loop playsinline preload="auto">
                 <source src="video-hero.mp4" type="video/mp4">
             </video>
@@ -6560,36 +6598,36 @@
             const percentText = document.getElementById('preloaderPercent');
             const corners = document.querySelectorAll('.preloader-corner');
 
-            const DURATION = 5000; // 5 seconds total
+            const DURATION = 3000; // 3 seconds total (was 5s — snappier)
             let startTime = null;
 
-            // Phase 1 (0.3s): Corners appear
+            // Phase 1 (0.2s): Corners appear
             setTimeout(() => {
                 corners.forEach(c => c.classList.add('show'));
-            }, 300);
+            }, 200);
 
-            // Phase 2 (0.8s): Logo text reveals
+            // Phase 2 (0.5s): Logo text reveals
             setTimeout(() => {
                 if (logoText) logoText.classList.add('show');
-            }, 800);
+            }, 500);
 
-            // Phase 3 (1.6s): Tagline appears
+            // Phase 3 (1.0s): Tagline appears
             setTimeout(() => {
                 if (tagline) tagline.classList.add('show');
-            }, 1600);
+            }, 1000);
 
-            // Phase 4 (2.0s): Progress bar starts
+            // Phase 4 (1.2s): Progress bar starts
             setTimeout(() => {
                 if (progressBar) progressBar.classList.add('show');
                 if (percentText) percentText.classList.add('show');
                 startTime = performance.now();
                 requestAnimationFrame(animateProgress);
-            }, 2000);
+            }, 1200);
 
             function animateProgress(now) {
                 if (!startTime) startTime = now;
                 const elapsed = now - startTime;
-                const remaining = DURATION - 2000; // 3 seconds for progress
+                const remaining = DURATION - 1200; // 1.8 seconds for progress
                 const progress = Math.min(elapsed / remaining, 1);
 
                 // Ease out quad for natural feel
@@ -6696,7 +6734,7 @@
                     showPopup();
                     window.removeEventListener('scroll', popupScrollCheck);
                 }
-            });
+            }, { passive: true });
 
             // Close handlers
             if (closeBtn) closeBtn.addEventListener('click', hidePopup);
