@@ -94,7 +94,11 @@
             max-width: 100%;
             height: auto;
             display: block;
-            content-visibility: auto;
+            /* content-visibility: auto REMOVED — caused infinite scroll bounce.
+               This property is for large SECTIONS, NOT individual images.
+               When applied to imgs with height:auto, the browser can't calculate
+               height when content is skipped → layout collapses → scroll shifts
+               → more images enter/leave → infinite feedback loop. */
         }
 
         /* Image loading — smooth fade in when loaded */
