@@ -1152,17 +1152,16 @@
 
         .hero-bg video {
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 2s ease;
         }
 
         /* When video is playing, cross-fade from poster */
-        .hero-bg video.active {
-            display: block !important;
+        .hero-bg video.is-playing {
             opacity: 0.35;
         }
-        .hero-bg video.active ~ .hero-poster {
+        .hero-bg video.is-playing ~ .hero-poster {
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 2s ease;
         }
 
         .hero-bg::after {
@@ -2012,16 +2011,15 @@
             opacity: 0;
             height: 100%;
             transform: translateZ(0);
-            transition: opacity 1.5s ease;
+            transition: opacity 2s ease;
         }
 
-        .vs-bg video.active {
-            display: block !important;
+        .vs-bg video.is-playing {
             opacity: 0.28;
         }
-        .vs-bg video.active ~ .vs-poster {
+        .vs-bg video.is-playing ~ .vs-poster {
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 2s ease;
         }
 
         .vs-bg::after {
@@ -4960,7 +4958,7 @@
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
             <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async">
-            <video muted loop playsinline preload="metadata" style="display:none;">
+            <video autoplay muted loop playsinline preload="auto">
                 <source src="video-hero.mp4" type="video/mp4">
             </video>
         </div>
@@ -6651,73 +6649,45 @@
             }
         }
 
-        // ─── Autoplay Video Controls (Apple approach) ───
-        // Hero: autoplay immediately after page load (user sees it first)
-        // VS: autoplay when scrolled into viewport (lazy, saves bandwidth)
+        // ─── Video Autoplay (Apple approach) ───
+        // Simple: detect when browser plays, cross-fade with CSS class.
+        // The <video autoplay muted loop playsinline> handles playback natively.
+        // JS only adds the visual cross-fade class.
         {
-            // Helper: cross-fade video in, replacing poster
-            function activateVideo(video) {
-                video.style.display = '';
-                video.classList.add('active');
-                video.play().catch(() => {
-                    // Autoplay blocked (Low Power Mode, etc.) — poster stays visible
-                    video.style.display = 'none';
-                    video.classList.remove('active');
-                });
-            }
-
-            // ── Hero video: autoplay after preloader finishes ──
+            // ── Hero video: browser autoplays it, we just cross-fade ──
             const heroVideo = document.querySelector('.hero-bg video');
             if (heroVideo) {
-                let heroActivated = false;
+                // Listen for the 'playing' event — fires when video actually starts
+                heroVideo.addEventListener('playing', () => {
+                    heroVideo.classList.add('is-playing');
+                }, { once: true });
 
-                function tryActivateHero() {
-                    if (heroActivated) return;
-                    heroActivated = true;
-                    activateVideo(heroVideo);
+                // If autoplay already started before JS ran, handle it
+                if (!heroVideo.paused) {
+                    heroVideo.classList.add('is-playing');
                 }
-
-                // Fire on whichever event comes first
-                heroVideo.addEventListener('canplay', tryActivateHero, { once: true });
-                heroVideo.addEventListener('canplaythrough', tryActivateHero, { once: true });
-                heroVideo.addEventListener('loadeddata', tryActivateHero, { once: true });
-
-                // Start loading after preloader is done
-                setTimeout(() => {
-                    heroVideo.preload = 'auto';
-                    heroVideo.load();
-
-                    // Safety net: if no event fires within 8s, try playing anyway
-                    setTimeout(() => {
-                        if (!heroActivated && heroVideo.readyState >= 2) {
-                            tryActivateHero();
-                        }
-                    }, 8000);
-                }, 1500);
             }
 
-            // ── VS video: autoplay when scrolled into view, pause when out ──
+            // ── VS video: load & play when scrolled into view ──
+            const vsSection = document.querySelector('.visual-statement');
             const vsVideo = document.querySelector('.vs-bg video');
-            if (vsVideo) {
-                let vsLoaded = false;
-                let vsActivated = false;
+            if (vsVideo && vsSection) {
+                let vsStarted = false;
 
-                function tryActivateVS() {
-                    if (vsActivated) return;
-                    vsActivated = true;
-                    activateVideo(vsVideo);
-                }
+                vsVideo.addEventListener('playing', () => {
+                    vsVideo.classList.add('is-playing');
+                }, { once: true });
 
                 const vsVideoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            if (!vsLoaded) {
-                                vsVideo.addEventListener('canplay', tryActivateVS, { once: true });
-                                vsVideo.addEventListener('loadeddata', tryActivateVS, { once: true });
+                            if (!vsStarted) {
+                                // First time: load the video
                                 vsVideo.preload = 'auto';
                                 vsVideo.load();
-                                vsLoaded = true;
-                            } else if (vsVideo.paused && vsVideo.classList.contains('active')) {
+                                vsVideo.play().catch(() => {});
+                                vsStarted = true;
+                            } else if (vsVideo.paused) {
                                 vsVideo.play().catch(() => {});
                             }
                         } else {
@@ -6725,7 +6695,7 @@
                         }
                     });
                 }, { threshold: 0.15 });
-                vsVideoObserver.observe(document.querySelector('.visual-statement'));
+                vsVideoObserver.observe(vsSection);
             }
         }
 
