@@ -1442,6 +1442,9 @@
 
         .service-card {
             position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            cursor: pointer;
         }
 
         /* UDrone stagger: middle card shifts down */
@@ -1450,9 +1453,8 @@
         }
 
         .service-card-image {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 4/5;
+            position: absolute;
+            inset: 0;
             background: var(--bg-dark-2);
         }
 
@@ -1460,10 +1462,28 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Hover zoom REMOVED — caused scroll jank on Mac trackpad.
-           The trackpad triggers :hover during scroll, creating GPU repaints. */
+        .service-card:hover .service-card-image img {
+            transform: scale(1.08);
+        }
+
+        /* Bottom gradient — always visible for readability */
+        .service-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+            z-index: 1;
+            transition: opacity 0.4s ease;
+        }
+        .service-card:hover::after {
+            opacity: 0;
+        }
 
         /* Number badge — UDrone signature */
         .service-number {
@@ -1479,13 +1499,39 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2;
+            z-index: 5;
             letter-spacing: 1px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .service-card:hover .service-number {
+            transform: translateX(100%);
+            opacity: 0;
         }
 
+        /* Default title at bottom — visible, hides on hover */
         .service-card-body {
-            padding: 28px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            padding: 28px 24px;
             text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .service-card:hover .service-card-body {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .service-card-body .service-tag {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--sky-blue);
+            margin-bottom: 6px;
         }
 
         .service-card-body h3 {
@@ -1493,16 +1539,118 @@
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin: 0;
         }
 
         .service-card-body p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.8;
+            display: none; /* Hidden by default — shown in overlay */
         }
 
-        /* Service cards — always visible, no scroll animation */
+        /* Hover overlay — slides in on hover */
+        .service-card-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            background: rgba(17, 24, 39, 0.90);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .service-card:hover .service-card-overlay {
+            opacity: 1;
+        }
+
+        .service-card-overlay .overlay-tag {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--sky-blue);
+            margin-bottom: 12px;
+        }
+
+        .service-card-overlay h3 {
+            font-family: var(--font-body);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .service-card-overlay p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            max-width: 280px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease 0.1s;
+        }
+        .service-card:hover .service-card-overlay p {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stats row inside overlay */
+        .service-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.4s ease 0.15s;
+        }
+        .service-card:hover .service-stats {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .service-stat {
+            text-align: center;
+        }
+        .service-stat-value {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--amber);
+            line-height: 1;
+        }
+        .service-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .service-card-overlay .overlay-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: var(--amber);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.4s ease 0.2s;
+        }
+        .service-card:hover .service-card-overlay .overlay-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .service-card-overlay .overlay-btn:hover {
+            background: #fff;
+        }
 
         /* Responsive services */
         @media (max-width: 991px) {
@@ -1512,11 +1660,44 @@
             }
         }
 
+        @media (max-width: 991px) {
+            .service-card:nth-child(2) {
+                margin-top: 0;
+            }
+        }
+
         @media (max-width: 640px) {
             .services-grid {
                 grid-template-columns: 1fr;
                 max-width: 400px;
                 margin: 0 auto;
+            }
+        }
+
+        /* Touch devices — show overlay on tap (no hover) */
+        @media (hover: none) {
+            .service-card-overlay {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .service-card.is-tapped .service-card-overlay {
+                opacity: 1;
+            }
+            .service-card.is-tapped .service-card-overlay p,
+            .service-card.is-tapped .service-stats,
+            .service-card.is-tapped .service-card-overlay .overlay-btn {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .service-card.is-tapped .service-card-body {
+                opacity: 0;
+            }
+            .service-card.is-tapped::after {
+                opacity: 0;
+            }
+            .service-card.is-tapped .service-number {
+                transform: translateX(100%);
+                opacity: 0;
             }
         }
 
@@ -5027,44 +5208,98 @@
 
             <div class="services-grid">
                 <!-- Service 01 — Mycie dachów -->
-                <div class="service-card">
-                    <a href="#kalkulator">
-                        <div class="service-card-image">
-                            <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
-                            <div class="service-number">01</div>
-                        </div>
-                    </a>
+                <div class="service-card" data-reveal="up">
+                    <div class="service-card-image">
+                        <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
+                    </div>
+                    <div class="service-number">01</div>
                     <div class="service-card-body">
+                        <div class="service-tag">Dachy</div>
                         <h3>Mycie dachów</h3>
-                        <p>Profesjonalne usuwanie mchu, glonów i zabrudzeń z dachów skośnych i płaskich. Bez rusztowań, bez drabin — nasz dron pracuje do 60 m wysokości.</p>
+                    </div>
+                    <div class="service-card-overlay">
+                        <div class="overlay-tag">Mycie dachu</div>
+                        <h3>Profesjonalne mycie z powietrza</h3>
+                        <p>Usuwanie mchu, glonów i zabrudzeń z dachów skośnych i płaskich. Bez rusztowań, bez drabin.</p>
+                        <div class="service-stats">
+                            <div class="service-stat">
+                                <div class="service-stat-value">60m</div>
+                                <div class="service-stat-label">Wysokość</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">0</div>
+                                <div class="service-stat-label">Rusztowań</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">98%</div>
+                                <div class="service-stat-label">Skuteczność</div>
+                            </div>
+                        </div>
+                        <a href="#kalkulator" class="overlay-btn">Wycena &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Service 02 — Mycie fotowoltaiki -->
-                <div class="service-card">
-                    <a href="#kalkulator">
-                        <div class="service-card-image">
-                            <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
-                            <div class="service-number">02</div>
-                        </div>
-                    </a>
+                <div class="service-card" data-reveal="up" data-stagger="3">
+                    <div class="service-card-image">
+                        <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                    </div>
+                    <div class="service-number">02</div>
                     <div class="service-card-body">
+                        <div class="service-tag">Fotowoltaika</div>
                         <h3>Mycie fotowoltaiki</h3>
-                        <p>Delikatne, ale skuteczne czyszczenie paneli fotowoltaicznych. Przywracamy pełną wydajność bez ryzyka uszkodzeń mechanicznych i zarysowań.</p>
+                    </div>
+                    <div class="service-card-overlay">
+                        <div class="overlay-tag">Fotowoltaika</div>
+                        <h3>Delikatne czyszczenie paneli PV</h3>
+                        <p>Przywracamy pełną wydajność paneli bez ryzyka uszkodzeń mechanicznych i zarysowań.</p>
+                        <div class="service-stats">
+                            <div class="service-stat">
+                                <div class="service-stat-value">+18%</div>
+                                <div class="service-stat-label">Wydajność</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">0</div>
+                                <div class="service-stat-label">Zarysowań</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">1 dzień</div>
+                                <div class="service-stat-label">Realizacja</div>
+                            </div>
+                        </div>
+                        <a href="#kalkulator" class="overlay-btn">Wycena &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Service 03 — Mycie elewacji -->
-                <div class="service-card">
-                    <a href="#kalkulator">
-                        <div class="service-card-image">
-                            <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
-                            <div class="service-number">03</div>
-                        </div>
-                    </a>
+                <div class="service-card" data-reveal="up" data-stagger="5">
+                    <div class="service-card-image">
+                        <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                    </div>
+                    <div class="service-number">03</div>
                     <div class="service-card-body">
+                        <div class="service-tag">Elewacja</div>
                         <h3>Mycie elewacji</h3>
-                        <p>Czyszczenie elewacji budynków mieszkalnych, biurowców i hal przemysłowych. Skuteczne usuwanie brudu, glonów i nalotów z każdej powierzchni.</p>
+                    </div>
+                    <div class="service-card-overlay">
+                        <div class="overlay-tag">Elewacja</div>
+                        <h3>Czyszczenie każdej powierzchni</h3>
+                        <p>Budynki mieszkalne, biurowce i hale przemysłowe. Skuteczne usuwanie brudu, glonów i nalotów.</p>
+                        <div class="service-stats">
+                            <div class="service-stat">
+                                <div class="service-stat-value">45m</div>
+                                <div class="service-stat-label">Budynki</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">Eco</div>
+                                <div class="service-stat-label">Środki</div>
+                            </div>
+                            <div class="service-stat">
+                                <div class="service-stat-value">100%</div>
+                                <div class="service-stat-label">Bezpiecznie</div>
+                            </div>
+                        </div>
+                        <a href="#kalkulator" class="overlay-btn">Wycena &rarr;</a>
                     </div>
                 </div>
             </div>
@@ -6725,6 +6960,21 @@
                 }, { threshold: 0.15 });
                 vsVideoObserver.observe(vsSection);
             }
+        }
+
+        // ─── Service cards: tap-to-reveal on touch devices ───
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // If overlay is showing and user tapped the CTA link, let it through
+                    if (card.classList.contains('is-tapped') && e.target.closest('.overlay-btn')) return;
+                    e.preventDefault();
+                    // Toggle this card, close others
+                    const wasActive = card.classList.contains('is-tapped');
+                    document.querySelectorAll('.service-card.is-tapped').forEach(c => c.classList.remove('is-tapped'));
+                    if (!wasActive) card.classList.add('is-tapped');
+                });
+            });
         }
 
         // Calculator Logic
