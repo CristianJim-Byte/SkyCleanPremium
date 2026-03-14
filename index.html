@@ -1401,7 +1401,7 @@
             animation: fadeSlideUp 0.8s ease forwards 0.9s;
         }
 
-        /* Hero drone image — floating large drone like UDrone */
+        /* Hero drone — 3D canvas replaces static image on desktop */
         .hero-drone-wrapper {
             position: relative;
             z-index: 3;
@@ -1419,6 +1419,85 @@
         @keyframes floatDrone {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
+        }
+
+        /* 3D Drone Canvas — overlays the static image on desktop */
+        #droneCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Hide static image when 3D is active */
+        .hero-drone-wrapper.has-3d img {
+            visibility: hidden;
+        }
+
+        /* On mobile, keep static image (Three.js disabled) */
+        @media (max-width: 768px) {
+            #droneCanvas { display: none !important; }
+            .hero-drone-wrapper.has-3d img { visibility: visible; }
+        }
+
+        /* ================================================== */
+        /* CUSTOM CURSOR — Magnetic glow trail                 */
+        /* ================================================== */
+        .cursor-glow {
+            position: fixed;
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(14, 165, 233, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+                        width 0.3s ease, height 0.3s ease,
+                        border-color 0.3s ease, background 0.3s ease;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            backdrop-filter: blur(1px);
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--sky-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100000;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease;
+        }
+
+        /* Cursor states */
+        .cursor-glow.hovering {
+            width: 56px;
+            height: 56px;
+            border-color: rgba(245, 158, 11, 0.8);
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .cursor-glow.clicking {
+            transform: translate(-50%, -50%) scale(0.7);
+            border-color: rgba(14, 165, 233, 1);
+            background: rgba(14, 165, 233, 0.15);
+        }
+
+        /* Hide on touch devices */
+        @media (hover: none), (max-width: 768px) {
+            .cursor-glow, .cursor-dot { display: none !important; }
+        }
+
+        /* Hide default cursor on desktop when custom cursor is active */
+        @media (hover: hover) and (min-width: 769px) {
+            body.custom-cursor { cursor: none; }
+            body.custom-cursor a, body.custom-cursor button,
+            body.custom-cursor input, body.custom-cursor select,
+            body.custom-cursor textarea { cursor: none; }
         }
 
         /* Marquee decorative bar — signature UDrone element */
@@ -4859,6 +4938,10 @@
 </head>
 <body>
 
+    <!-- Custom Cursor (desktop only) -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
     <!-- ================================================== -->
     <!-- CINEMATIC PRELOADER                                 -->
     <!-- ================================================== -->
@@ -5305,9 +5388,10 @@
             </div>
         </div>
 
-        <!-- Drone floating image -->
-        <div class="hero-drone-wrapper">
+        <!-- Drone — 3D on desktop, static fallback on mobile -->
+        <div class="hero-drone-wrapper" id="heroDroneWrapper">
             <img src="img/hero-drone.webp" alt="Dron profesjonalny SkyClean" fetchpriority="high" decoding="async" width="600" height="400">
+            <canvas id="droneCanvas"></canvas>
         </div>
 
         <!-- Decorative marquee bar — UDrone signature -->
@@ -7396,6 +7480,301 @@
                 isOpen ? lenis.stop() : lenis.start();
             }
         }
+
+        // ═══════════════════════════════════════════════════
+        // CUSTOM CURSOR — Magnetic glow with interactive states
+        // ═══════════════════════════════════════════════════
+        {
+            const glow = document.getElementById('cursorGlow');
+            const dot = document.getElementById('cursorDot');
+
+            if (glow && dot && window.matchMedia('(hover: hover) and (min-width: 769px)').matches) {
+                document.body.classList.add('custom-cursor');
+
+                let mouseX = 0, mouseY = 0;
+                let glowX = 0, glowY = 0;
+
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    // Dot follows instantly
+                    dot.style.left = mouseX + 'px';
+                    dot.style.top = mouseY + 'px';
+                }, { passive: true });
+
+                // Glow follows with lerp (smooth lag)
+                function animateCursor() {
+                    glowX += (mouseX - glowX) * 0.12;
+                    glowY += (mouseY - glowY) * 0.12;
+                    glow.style.left = glowX + 'px';
+                    glow.style.top = glowY + 'px';
+                    requestAnimationFrame(animateCursor);
+                }
+                requestAnimationFrame(animateCursor);
+
+                // Hover state on interactive elements
+                const hoverTargets = 'a, button, .service-card, .project-card, .industry-card, input, select, .hero-cta, .nav-cta, .overlay-btn, .testimonials-dot';
+                document.querySelectorAll(hoverTargets).forEach(el => {
+                    el.addEventListener('mouseenter', () => glow.classList.add('hovering'));
+                    el.addEventListener('mouseleave', () => glow.classList.remove('hovering'));
+                });
+
+                // Click state
+                document.addEventListener('mousedown', () => glow.classList.add('clicking'));
+                document.addEventListener('mouseup', () => glow.classList.remove('clicking'));
+
+                // Hide when cursor leaves window
+                document.addEventListener('mouseleave', () => {
+                    glow.style.opacity = '0';
+                    dot.style.opacity = '0';
+                });
+                document.addEventListener('mouseenter', () => {
+                    glow.style.opacity = '1';
+                    dot.style.opacity = '1';
+                });
+            }
+        }
+    </script>
+
+    <!-- ================================================== -->
+    <!-- THREE.JS — 3D Drone (desktop only)                  -->
+    <!-- ================================================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+    {
+        const wrapper = document.getElementById('heroDroneWrapper');
+        const canvas = document.getElementById('droneCanvas');
+        const isMobile = window.innerWidth <= 768;
+
+        if (wrapper && canvas && typeof THREE !== 'undefined' && !isMobile) {
+            wrapper.classList.add('has-3d');
+
+            // ── Scene setup ──
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, wrapper.offsetWidth / wrapper.offsetHeight, 0.1, 100);
+            camera.position.set(0, 1.5, 6);
+            camera.lookAt(0, 0.3, 0);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(wrapper.offsetWidth, wrapper.offsetHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+
+            // ── Lighting — dramatic, cinematic ──
+            const ambientLight = new THREE.AmbientLight(0x334455, 0.4);
+            scene.add(ambientLight);
+
+            const keyLight = new THREE.DirectionalLight(0x0EA5E9, 1.8);
+            keyLight.position.set(3, 5, 4);
+            scene.add(keyLight);
+
+            const fillLight = new THREE.DirectionalLight(0xF59E0B, 0.6);
+            fillLight.position.set(-3, 2, -2);
+            scene.add(fillLight);
+
+            const rimLight = new THREE.PointLight(0x0EA5E9, 1.5, 15);
+            rimLight.position.set(0, -1, 3);
+            scene.add(rimLight);
+
+            // ── Materials ──
+            const bodyMat = new THREE.MeshStandardMaterial({
+                color: 0x1a1a2e,
+                metalness: 0.85,
+                roughness: 0.2,
+            });
+            const accentMat = new THREE.MeshStandardMaterial({
+                color: 0x0EA5E9,
+                metalness: 0.7,
+                roughness: 0.3,
+                emissive: 0x0EA5E9,
+                emissiveIntensity: 0.3,
+            });
+            const motorMat = new THREE.MeshStandardMaterial({
+                color: 0x333344,
+                metalness: 0.9,
+                roughness: 0.15,
+            });
+            const propMat = new THREE.MeshStandardMaterial({
+                color: 0x222233,
+                metalness: 0.5,
+                roughness: 0.4,
+                transparent: true,
+                opacity: 0.85,
+            });
+            const lensMat = new THREE.MeshStandardMaterial({
+                color: 0x111111,
+                metalness: 1,
+                roughness: 0.05,
+                emissive: 0x0EA5E9,
+                emissiveIntensity: 0.15,
+            });
+
+            // ── Build drone procedurally ──
+            const drone = new THREE.Group();
+
+            // Central body — flattened rounded shape
+            const bodyGeo = new THREE.BoxGeometry(1.2, 0.28, 0.85, 4, 2, 4);
+            // Soften edges by pulling vertices
+            bodyGeo.attributes.position.array.forEach((v, i) => {
+                const arr = bodyGeo.attributes.position.array;
+                // Round the top/bottom faces slightly
+                if (i % 3 === 1) {
+                    const x = arr[i - 1], z = arr[i + 1];
+                    const dist = Math.sqrt(x * x + z * z);
+                    arr[i] *= (1 - dist * 0.08);
+                }
+            });
+            bodyGeo.computeVertexNormals();
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            drone.add(body);
+
+            // Accent stripe on body
+            const stripeGeo = new THREE.BoxGeometry(1.22, 0.04, 0.3);
+            const stripe = new THREE.Mesh(stripeGeo, accentMat);
+            stripe.position.set(0, 0.14, 0);
+            drone.add(stripe);
+
+            // Camera/gimbal under body
+            const gimbalGeo = new THREE.SphereGeometry(0.12, 16, 12);
+            const gimbal = new THREE.Mesh(gimbalGeo, motorMat);
+            gimbal.position.set(0, -0.2, 0.15);
+            drone.add(gimbal);
+
+            const lensGeo = new THREE.CylinderGeometry(0.06, 0.08, 0.06, 16);
+            const lens = new THREE.Mesh(lensGeo, lensMat);
+            lens.rotation.x = Math.PI / 2;
+            lens.position.set(0, -0.2, 0.27);
+            drone.add(lens);
+
+            // Arms and propellers
+            const arms = [
+                { x: 0.85, z: 0.65, angle: Math.atan2(0.65, 0.85) },
+                { x: -0.85, z: 0.65, angle: Math.atan2(0.65, -0.85) },
+                { x: 0.85, z: -0.65, angle: Math.atan2(-0.65, 0.85) },
+                { x: -0.85, z: -0.65, angle: Math.atan2(-0.65, -0.85) },
+            ];
+
+            const propellers = [];
+
+            arms.forEach((arm, i) => {
+                // Arm
+                const armGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.05, 8);
+                const armMesh = new THREE.Mesh(armGeo, bodyMat);
+                armMesh.rotation.z = Math.PI / 2;
+                armMesh.rotation.y = arm.angle;
+                armMesh.position.set(arm.x * 0.5, 0.04, arm.z * 0.5);
+                drone.add(armMesh);
+
+                // Motor housing
+                const motorGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.12, 12);
+                const motor = new THREE.Mesh(motorGeo, motorMat);
+                motor.position.set(arm.x, 0.1, arm.z);
+                drone.add(motor);
+
+                // Propeller disc (spinning)
+                const propGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.015, 32);
+                const prop = new THREE.Mesh(propGeo, propMat);
+                prop.position.set(arm.x, 0.18, arm.z);
+                drone.add(prop);
+                propellers.push(prop);
+
+                // LED on each motor — blue/amber alternating
+                const ledColor = i % 2 === 0 ? 0x0EA5E9 : 0xF59E0B;
+                const ledMat = new THREE.MeshStandardMaterial({
+                    color: ledColor, emissive: ledColor, emissiveIntensity: 2,
+                });
+                const ledGeo = new THREE.SphereGeometry(0.025, 8, 8);
+                const led = new THREE.Mesh(ledGeo, ledMat);
+                led.position.set(arm.x, 0.04, arm.z + (arm.z > 0 ? 0.1 : -0.1));
+                drone.add(led);
+            });
+
+            // Landing gear legs
+            [{ x: 0.35, z: 0.3 }, { x: -0.35, z: 0.3 }, { x: 0.35, z: -0.3 }, { x: -0.35, z: -0.3 }].forEach(pos => {
+                const legGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.35, 6);
+                const leg = new THREE.Mesh(legGeo, motorMat);
+                leg.position.set(pos.x, -0.32, pos.z);
+                drone.add(leg);
+
+                // Foot
+                const footGeo = new THREE.SphereGeometry(0.035, 8, 6);
+                const foot = new THREE.Mesh(footGeo, motorMat);
+                foot.position.set(pos.x, -0.49, pos.z);
+                drone.add(foot);
+            });
+
+            scene.add(drone);
+            drone.position.y = 0.3;
+
+            // ── Mouse tracking for interactive tilt ──
+            let targetRotX = 0, targetRotY = 0;
+            let mouseInfluenceX = 0, mouseInfluenceY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseInfluenceX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseInfluenceY = (e.clientY / window.innerHeight - 0.5) * 2;
+            }, { passive: true });
+
+            // ── Animation loop ──
+            let droneTime = 0;
+            let isVisible = true;
+
+            // Pause when off-screen
+            const droneObserver = new IntersectionObserver((entries) => {
+                isVisible = entries[0].isIntersecting;
+            }, { threshold: 0 });
+            droneObserver.observe(wrapper);
+
+            function animateDrone() {
+                requestAnimationFrame(animateDrone);
+                if (!isVisible) return;
+
+                droneTime += 0.016;
+
+                // Floating motion
+                drone.position.y = 0.3 + Math.sin(droneTime * 0.8) * 0.12;
+
+                // Subtle idle sway
+                const idleRotX = Math.sin(droneTime * 0.5) * 0.03;
+                const idleRotZ = Math.cos(droneTime * 0.7) * 0.02;
+
+                // Mouse-reactive tilt
+                targetRotY = mouseInfluenceX * 0.25;
+                targetRotX = mouseInfluenceY * 0.1;
+
+                drone.rotation.x = idleRotX + (targetRotX - drone.rotation.x) * 0.03;
+                drone.rotation.y += (targetRotY - drone.rotation.y) * 0.03;
+                drone.rotation.z = idleRotZ;
+
+                // Spin propellers
+                propellers.forEach((p, i) => {
+                    p.rotation.y += (i % 2 === 0 ? 0.45 : -0.45);
+                });
+
+                // Rim light subtle pulse
+                rimLight.intensity = 1.5 + Math.sin(droneTime * 2) * 0.3;
+
+                renderer.render(scene, camera);
+            }
+            animateDrone();
+
+            // ── Resize handler ──
+            window.addEventListener('resize', () => {
+                if (window.innerWidth <= 768) {
+                    wrapper.classList.remove('has-3d');
+                    return;
+                }
+                wrapper.classList.add('has-3d');
+                const w = wrapper.offsetWidth;
+                const h = wrapper.offsetHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            });
+        }
+    }
     </script>
 
 </body>
