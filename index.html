@@ -1405,7 +1405,7 @@
         .hero-drone-wrapper {
             position: relative;
             z-index: 3;
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
             opacity: 0;
             animation: fadeScaleIn 1s ease forwards 0.6s;
@@ -1495,6 +1495,116 @@
             body.custom-cursor textarea { cursor: none; }
         }
 
+        /* ================================================== */
+        /* MICRO-INTERACTIONS — Premium feel                   */
+        /* ================================================== */
+
+        /* ── Scroll progress bar (top of page) ── */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--sky-blue), var(--amber));
+            z-index: 100001;
+            transition: none;
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+        }
+
+        /* ── Nav links — animated underline ── */
+        .nav-links a {
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--sky-blue);
+            transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), left 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 1px;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* ── Magnetic button base — JS adds transform ── */
+        .magnetic-wrap {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ── Tilt 3D on cards ── */
+        .service-card,
+        .project-card,
+        .industry-card {
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.5s ease;
+        }
+
+        /* ── Ripple effect on CTA buttons ── */
+        .ripple-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0);
+            animation: rippleAnim 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* ── Text shimmer on section titles ── */
+        .section-title .accent {
+            background: linear-gradient(90deg, var(--sky-blue), var(--amber), var(--sky-blue));
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: none;
+        }
+        .section-title .accent.shimmer-active {
+            animation: textShimmer 2.5s ease-in-out;
+        }
+        @keyframes textShimmer {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        /* ── Stat counter glow pulse on reveal ── */
+        .vs-stat .counter {
+            transition: text-shadow 0.5s ease;
+        }
+        .vs-stat.counted .counter {
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+        }
+
+        /* ── Smooth focus glow on form inputs ── */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3), 0 0 20px rgba(14, 165, 233, 0.1) !important;
+            transition: box-shadow 0.4s ease !important;
+        }
+
+        /* ── Tooltip-style hover on trust badges ── */
+        .trust-item {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .trust-item:hover {
+            transform: scale(1.08);
+        }
+
         /* Marquee decorative bar — signature UDrone element */
         .hero-marquee {
             position: relative;
@@ -1512,7 +1622,7 @@
 
         .marquee-bars {
             font-family: var(--font-display);
-            font-size: clamp(80px, 10vw, 150px);
+            font-size: clamp(50px, 7vw, 100px);
             font-weight: bold;
             color: var(--sky-blue);
             line-height: 1;
@@ -4933,6 +5043,9 @@
 </head>
 <body>
 
+    <!-- Scroll progress bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
     <!-- Custom Cursor (desktop only) -->
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="cursor-dot" id="cursorDot"></div>
@@ -7473,6 +7586,104 @@
             if (lenis) {
                 isOpen ? lenis.stop() : lenis.start();
             }
+        }
+
+        // ═══════════════════════════════════════════════════
+        // MICRO-INTERACTIONS — Premium details
+        // ═══════════════════════════════════════════════════
+
+        // ── 1. Scroll Progress Bar ──
+        {
+            const progressBar = document.getElementById('scrollProgress');
+            if (progressBar) {
+                window.addEventListener('scroll', () => {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = (scrollTop / docHeight) * 100;
+                    progressBar.style.width = progress + '%';
+                }, { passive: true });
+            }
+        }
+
+        // ── 2. Magnetic Buttons (desktop only) ──
+        if (window.matchMedia('(hover: hover) and (min-width: 769px)').matches) {
+            document.querySelectorAll('.hero-cta, .nav-cta, .overlay-btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                });
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = '';
+                });
+            });
+        }
+
+        // ── 3. 3D Tilt on Cards (desktop only) ──
+        if (window.matchMedia('(hover: hover) and (min-width: 769px)').matches) {
+            document.querySelectorAll('.service-card, .project-card, .industry-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 6}deg) scale(1.02)`;
+                    card.style.boxShadow = `${-x * 15}px ${y * 15}px 30px rgba(0,0,0,0.25)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    card.style.boxShadow = '';
+                });
+            });
+        }
+
+        // ── 4. Ripple Effect on CTA buttons ──
+        document.querySelectorAll('.hero-cta, .nav-cta, .overlay-btn, .calc-cta').forEach(btn => {
+            btn.classList.add('ripple-container');
+            btn.addEventListener('click', (e) => {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                btn.appendChild(ripple);
+                ripple.addEventListener('animationend', () => ripple.remove());
+            });
+        });
+
+        // ── 5. Text Shimmer on section titles when they enter view ──
+        {
+            const shimmerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const accent = entry.target.querySelector('.accent');
+                        if (accent) {
+                            accent.classList.add('shimmer-active');
+                            accent.addEventListener('animationend', () => {
+                                accent.classList.remove('shimmer-active');
+                            }, { once: true });
+                        }
+                        shimmerObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.section-title').forEach(el => shimmerObserver.observe(el));
+        }
+
+        // ── 6. Counter glow after animation completes ──
+        {
+            const glowObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => entry.target.classList.add('counted'), 2200);
+                        glowObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            document.querySelectorAll('.vs-stat[data-target]').forEach(el => glowObserver.observe(el));
         }
 
         // ═══════════════════════════════════════════════════
