@@ -1421,25 +1421,20 @@
             50% { transform: translateY(-15px); }
         }
 
-        /* 3D Drone Canvas — overlays the static image on desktop */
-        #droneCanvas {
-            position: absolute;
-            inset: 0;
+        /* 3D Mini-Drone — follows cursor across the page */
+        #miniDroneCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
+            z-index: 9998;
             pointer-events: none;
         }
 
-        /* Hide static image when 3D is active */
-        .hero-drone-wrapper.has-3d img {
-            visibility: hidden;
-        }
-
-        /* On mobile, keep static image (Three.js disabled) */
-        @media (max-width: 768px) {
-            #droneCanvas { display: none !important; }
-            .hero-drone-wrapper.has-3d img { visibility: visible; }
+        /* Hide on mobile/touch */
+        @media (max-width: 768px), (hover: none) {
+            #miniDroneCanvas { display: none !important; }
         }
 
         /* ================================================== */
@@ -5388,10 +5383,9 @@
             </div>
         </div>
 
-        <!-- Drone — 3D on desktop, static fallback on mobile -->
-        <div class="hero-drone-wrapper" id="heroDroneWrapper">
+        <!-- Drone floating image -->
+        <div class="hero-drone-wrapper">
             <img src="img/hero-drone.webp" alt="Dron profesjonalny SkyClean" fetchpriority="high" decoding="async" width="600" height="400">
-            <canvas id="droneCanvas"></canvas>
         </div>
 
         <!-- Decorative marquee bar — UDrone signature -->
@@ -7537,241 +7531,196 @@
     </script>
 
     <!-- ================================================== -->
-    <!-- THREE.JS — 3D Drone (desktop only)                  -->
+    <!-- THREE.JS — Mini 3D Drone follows cursor (desktop)    -->
     <!-- ================================================== -->
+    <canvas id="miniDroneCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
     {
-        const wrapper = document.getElementById('heroDroneWrapper');
-        const canvas = document.getElementById('droneCanvas');
-        const isMobile = window.innerWidth <= 768;
+        const canvas = document.getElementById('miniDroneCanvas');
+        const isMobile = window.innerWidth <= 768 || !window.matchMedia('(hover: hover)').matches;
 
-        if (wrapper && canvas && typeof THREE !== 'undefined' && !isMobile) {
-            wrapper.classList.add('has-3d');
+        if (canvas && typeof THREE !== 'undefined' && !isMobile) {
 
-            // ── Scene setup ──
+            // ── Scene ──
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(45, wrapper.offsetWidth / wrapper.offsetHeight, 0.1, 100);
-            camera.position.set(0, 1.5, 6);
-            camera.lookAt(0, 0.3, 0);
+            const camera = new THREE.OrthographicCamera(
+                -window.innerWidth / 2, window.innerWidth / 2,
+                window.innerHeight / 2, -window.innerHeight / 2,
+                0.1, 1000
+            );
+            camera.position.z = 100;
 
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(wrapper.offsetWidth, wrapper.offsetHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.outputEncoding = THREE.sRGBEncoding;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
 
-            // ── Lighting — dramatic, cinematic ──
-            const ambientLight = new THREE.AmbientLight(0x334455, 0.4);
-            scene.add(ambientLight);
+            // ── Lighting ──
+            scene.add(new THREE.AmbientLight(0x334455, 0.5));
 
-            const keyLight = new THREE.DirectionalLight(0x0EA5E9, 1.8);
-            keyLight.position.set(3, 5, 4);
+            const keyLight = new THREE.DirectionalLight(0x0EA5E9, 2.0);
+            keyLight.position.set(50, 80, 60);
             scene.add(keyLight);
 
-            const fillLight = new THREE.DirectionalLight(0xF59E0B, 0.6);
-            fillLight.position.set(-3, 2, -2);
+            const fillLight = new THREE.DirectionalLight(0xF59E0B, 0.7);
+            fillLight.position.set(-40, 30, -30);
             scene.add(fillLight);
 
-            const rimLight = new THREE.PointLight(0x0EA5E9, 1.5, 15);
-            rimLight.position.set(0, -1, 3);
-            scene.add(rimLight);
+            const droneGlow = new THREE.PointLight(0x0EA5E9, 1.2, 200);
+            scene.add(droneGlow);
 
             // ── Materials ──
-            const bodyMat = new THREE.MeshStandardMaterial({
-                color: 0x1a1a2e,
-                metalness: 0.85,
-                roughness: 0.2,
-            });
-            const accentMat = new THREE.MeshStandardMaterial({
-                color: 0x0EA5E9,
-                metalness: 0.7,
-                roughness: 0.3,
-                emissive: 0x0EA5E9,
-                emissiveIntensity: 0.3,
-            });
-            const motorMat = new THREE.MeshStandardMaterial({
-                color: 0x333344,
-                metalness: 0.9,
-                roughness: 0.15,
-            });
-            const propMat = new THREE.MeshStandardMaterial({
-                color: 0x222233,
-                metalness: 0.5,
-                roughness: 0.4,
-                transparent: true,
-                opacity: 0.85,
-            });
-            const lensMat = new THREE.MeshStandardMaterial({
-                color: 0x111111,
-                metalness: 1,
-                roughness: 0.05,
-                emissive: 0x0EA5E9,
-                emissiveIntensity: 0.15,
-            });
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, metalness: 0.85, roughness: 0.2 });
+            const accentMat = new THREE.MeshStandardMaterial({ color: 0x0EA5E9, metalness: 0.7, roughness: 0.3, emissive: 0x0EA5E9, emissiveIntensity: 0.4 });
+            const motorMat = new THREE.MeshStandardMaterial({ color: 0x333344, metalness: 0.9, roughness: 0.15 });
+            const propMat = new THREE.MeshStandardMaterial({ color: 0x222233, metalness: 0.5, roughness: 0.4, transparent: true, opacity: 0.7 });
+            const lensMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 1, roughness: 0.05, emissive: 0x0EA5E9, emissiveIntensity: 0.2 });
 
-            // ── Build drone procedurally ──
+            // ── Build mini drone (scale ~40px on screen) ──
+            const SCALE = 16;
             const drone = new THREE.Group();
 
-            // Central body — flattened rounded shape
-            const bodyGeo = new THREE.BoxGeometry(1.2, 0.28, 0.85, 4, 2, 4);
-            // Soften edges by pulling vertices
-            bodyGeo.attributes.position.array.forEach((v, i) => {
-                const arr = bodyGeo.attributes.position.array;
-                // Round the top/bottom faces slightly
-                if (i % 3 === 1) {
-                    const x = arr[i - 1], z = arr[i + 1];
-                    const dist = Math.sqrt(x * x + z * z);
-                    arr[i] *= (1 - dist * 0.08);
-                }
-            });
-            bodyGeo.computeVertexNormals();
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            // Body
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.2 * SCALE, 0.28 * SCALE, 0.85 * SCALE), bodyMat);
             drone.add(body);
 
-            // Accent stripe on body
-            const stripeGeo = new THREE.BoxGeometry(1.22, 0.04, 0.3);
-            const stripe = new THREE.Mesh(stripeGeo, accentMat);
-            stripe.position.set(0, 0.14, 0);
+            // Accent stripe
+            const stripe = new THREE.Mesh(new THREE.BoxGeometry(1.22 * SCALE, 0.05 * SCALE, 0.3 * SCALE), accentMat);
+            stripe.position.y = 0.14 * SCALE;
             drone.add(stripe);
 
-            // Camera/gimbal under body
-            const gimbalGeo = new THREE.SphereGeometry(0.12, 16, 12);
-            const gimbal = new THREE.Mesh(gimbalGeo, motorMat);
-            gimbal.position.set(0, -0.2, 0.15);
+            // Camera gimbal
+            const gimbal = new THREE.Mesh(new THREE.SphereGeometry(0.1 * SCALE, 12, 10), motorMat);
+            gimbal.position.set(0, -0.2 * SCALE, 0.15 * SCALE);
             drone.add(gimbal);
 
-            const lensGeo = new THREE.CylinderGeometry(0.06, 0.08, 0.06, 16);
-            const lens = new THREE.Mesh(lensGeo, lensMat);
+            const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * SCALE, 0.07 * SCALE, 0.05 * SCALE, 12), lensMat);
             lens.rotation.x = Math.PI / 2;
-            lens.position.set(0, -0.2, 0.27);
+            lens.position.set(0, -0.2 * SCALE, 0.25 * SCALE);
             drone.add(lens);
 
-            // Arms and propellers
-            const arms = [
-                { x: 0.85, z: 0.65, angle: Math.atan2(0.65, 0.85) },
-                { x: -0.85, z: 0.65, angle: Math.atan2(0.65, -0.85) },
-                { x: 0.85, z: -0.65, angle: Math.atan2(-0.65, 0.85) },
-                { x: -0.85, z: -0.65, angle: Math.atan2(-0.65, -0.85) },
+            // Arms + propellers
+            const armPositions = [
+                { x: 0.85, z: 0.65 }, { x: -0.85, z: 0.65 },
+                { x: 0.85, z: -0.65 }, { x: -0.85, z: -0.65 },
             ];
-
             const propellers = [];
 
-            arms.forEach((arm, i) => {
-                // Arm
-                const armGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.05, 8);
-                const armMesh = new THREE.Mesh(armGeo, bodyMat);
-                armMesh.rotation.z = Math.PI / 2;
-                armMesh.rotation.y = arm.angle;
-                armMesh.position.set(arm.x * 0.5, 0.04, arm.z * 0.5);
-                drone.add(armMesh);
+            armPositions.forEach((pos, i) => {
+                const angle = Math.atan2(pos.z, pos.x);
 
-                // Motor housing
-                const motorGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.12, 12);
-                const motor = new THREE.Mesh(motorGeo, motorMat);
-                motor.position.set(arm.x, 0.1, arm.z);
+                // Arm
+                const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.035 * SCALE, 0.035 * SCALE, 1.0 * SCALE, 6), bodyMat);
+                arm.rotation.z = Math.PI / 2;
+                arm.rotation.y = angle;
+                arm.position.set(pos.x * 0.5 * SCALE, 0.04 * SCALE, pos.z * 0.5 * SCALE);
+                drone.add(arm);
+
+                // Motor
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.09 * SCALE, 0.07 * SCALE, 0.1 * SCALE, 10), motorMat);
+                motor.position.set(pos.x * SCALE, 0.1 * SCALE, pos.z * SCALE);
                 drone.add(motor);
 
-                // Propeller disc (spinning)
-                const propGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.015, 32);
-                const prop = new THREE.Mesh(propGeo, propMat);
-                prop.position.set(arm.x, 0.18, arm.z);
+                // Propeller
+                const prop = new THREE.Mesh(new THREE.CylinderGeometry(0.38 * SCALE, 0.38 * SCALE, 0.012 * SCALE, 24), propMat);
+                prop.position.set(pos.x * SCALE, 0.16 * SCALE, pos.z * SCALE);
                 drone.add(prop);
                 propellers.push(prop);
 
-                // LED on each motor — blue/amber alternating
+                // LED
                 const ledColor = i % 2 === 0 ? 0x0EA5E9 : 0xF59E0B;
-                const ledMat = new THREE.MeshStandardMaterial({
-                    color: ledColor, emissive: ledColor, emissiveIntensity: 2,
-                });
-                const ledGeo = new THREE.SphereGeometry(0.025, 8, 8);
-                const led = new THREE.Mesh(ledGeo, ledMat);
-                led.position.set(arm.x, 0.04, arm.z + (arm.z > 0 ? 0.1 : -0.1));
+                const led = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.025 * SCALE, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: ledColor, emissive: ledColor, emissiveIntensity: 2.5 })
+                );
+                led.position.set(pos.x * SCALE, 0.04 * SCALE, (pos.z + (pos.z > 0 ? 0.1 : -0.1)) * SCALE);
                 drone.add(led);
             });
 
-            // Landing gear legs
-            [{ x: 0.35, z: 0.3 }, { x: -0.35, z: 0.3 }, { x: 0.35, z: -0.3 }, { x: -0.35, z: -0.3 }].forEach(pos => {
-                const legGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.35, 6);
-                const leg = new THREE.Mesh(legGeo, motorMat);
-                leg.position.set(pos.x, -0.32, pos.z);
+            // Landing gear
+            [{ x: 0.3, z: 0.25 }, { x: -0.3, z: 0.25 }, { x: 0.3, z: -0.25 }, { x: -0.3, z: -0.25 }].forEach(pos => {
+                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.018 * SCALE, 0.018 * SCALE, 0.3 * SCALE, 6), motorMat);
+                leg.position.set(pos.x * SCALE, -0.28 * SCALE, pos.z * SCALE);
                 drone.add(leg);
-
-                // Foot
-                const footGeo = new THREE.SphereGeometry(0.035, 8, 6);
-                const foot = new THREE.Mesh(footGeo, motorMat);
-                foot.position.set(pos.x, -0.49, pos.z);
-                drone.add(foot);
             });
 
             scene.add(drone);
-            drone.position.y = 0.3;
 
-            // ── Mouse tracking for interactive tilt ──
-            let targetRotX = 0, targetRotY = 0;
-            let mouseInfluenceX = 0, mouseInfluenceY = 0;
+            // ── Mouse tracking — drone follows cursor with lag ──
+            let mouseX = 0, mouseY = 0;
+            let droneX = 0, droneY = 0;
+            let prevDroneX = 0, prevDroneY = 0;
+            let mouseOnPage = false;
 
             document.addEventListener('mousemove', (e) => {
-                mouseInfluenceX = (e.clientX / window.innerWidth - 0.5) * 2;
-                mouseInfluenceY = (e.clientY / window.innerHeight - 0.5) * 2;
+                mouseX = e.clientX - window.innerWidth / 2;
+                mouseY = -(e.clientY - window.innerHeight / 2);
+                mouseOnPage = true;
             }, { passive: true });
 
-            // ── Animation loop ──
-            let droneTime = 0;
-            let isVisible = true;
+            document.addEventListener('mouseleave', () => { mouseOnPage = false; });
+            document.addEventListener('mouseenter', () => { mouseOnPage = true; });
 
-            // Pause when off-screen
-            const droneObserver = new IntersectionObserver((entries) => {
-                isVisible = entries[0].isIntersecting;
-            }, { threshold: 0 });
-            droneObserver.observe(wrapper);
+            // Offset: drone follows ~80px above and to the right of cursor
+            const OFFSET_X = 60;
+            const OFFSET_Y = 55;
+            const FOLLOW_SPEED = 0.04;  // Slow, natural following
 
-            function animateDrone() {
-                requestAnimationFrame(animateDrone);
-                if (!isVisible) return;
+            // ── Animation ──
+            let t = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                t += 0.016;
 
-                droneTime += 0.016;
+                // Target position (offset from cursor)
+                const targetX = mouseX + OFFSET_X;
+                const targetY = mouseY + OFFSET_Y;
 
-                // Floating motion
-                drone.position.y = 0.3 + Math.sin(droneTime * 0.8) * 0.12;
+                // Smooth follow with lerp
+                prevDroneX = droneX;
+                prevDroneY = droneY;
+                droneX += (targetX - droneX) * FOLLOW_SPEED;
+                droneY += (targetY - droneY) * FOLLOW_SPEED;
 
-                // Subtle idle sway
-                const idleRotX = Math.sin(droneTime * 0.5) * 0.03;
-                const idleRotZ = Math.cos(droneTime * 0.7) * 0.02;
+                drone.position.x = droneX;
+                drone.position.y = droneY + Math.sin(t * 1.2) * 3; // Subtle float
 
-                // Mouse-reactive tilt
-                targetRotY = mouseInfluenceX * 0.25;
-                targetRotX = mouseInfluenceY * 0.1;
+                // Glow follows drone
+                droneGlow.position.set(droneX, droneY, 50);
 
-                drone.rotation.x = idleRotX + (targetRotX - drone.rotation.x) * 0.03;
-                drone.rotation.y += (targetRotY - drone.rotation.y) * 0.03;
-                drone.rotation.z = idleRotZ;
+                // Tilt based on movement direction (banking)
+                const velX = droneX - prevDroneX;
+                const velY = droneY - prevDroneY;
+                drone.rotation.z = -velX * 0.04;    // Bank into turns
+                drone.rotation.x = velY * 0.03;     // Pitch with vertical movement
+                drone.rotation.y = velX * 0.02;     // Slight yaw
 
                 // Spin propellers
                 propellers.forEach((p, i) => {
-                    p.rotation.y += (i % 2 === 0 ? 0.45 : -0.45);
+                    p.rotation.y += (i % 2 === 0 ? 0.5 : -0.5);
                 });
 
-                // Rim light subtle pulse
-                rimLight.intensity = 1.5 + Math.sin(droneTime * 2) * 0.3;
+                // Fade opacity based on cursor presence
+                canvas.style.opacity = mouseOnPage ? '1' : '0';
 
                 renderer.render(scene, camera);
             }
-            animateDrone();
+            animate();
 
-            // ── Resize handler ──
+            // Start offscreen
+            droneX = -window.innerWidth;
+            droneY = 0;
+
+            // ── Resize ──
             window.addEventListener('resize', () => {
-                if (window.innerWidth <= 768) {
-                    wrapper.classList.remove('has-3d');
-                    return;
-                }
-                wrapper.classList.add('has-3d');
-                const w = wrapper.offsetWidth;
-                const h = wrapper.offsetHeight;
-                camera.aspect = w / h;
+                if (window.innerWidth <= 768) return;
+                camera.left = -window.innerWidth / 2;
+                camera.right = window.innerWidth / 2;
+                camera.top = window.innerHeight / 2;
+                camera.bottom = -window.innerHeight / 2;
                 camera.updateProjectionMatrix();
-                renderer.setSize(w, h);
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
         }
     }
