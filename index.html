@@ -1395,8 +1395,10 @@
         /* ================================================== */
         /* SERVICES SECTION                                    */
         /* ================================================== */
-        /* GPU-friendly: skip rendering off-screen sections */
-        .services, .about, .projects, .visual-statement,
+        /* GPU-friendly: skip rendering off-screen sections.
+           IMPORTANT: Do NOT include sections near the fold (.services, .about)
+           — content-visibility causes a render-stutter when they first appear. */
+        .projects, .visual-statement,
         .industries, .testimonials, .how-it-works, .calculator,
         .service-area, .contact {
             content-visibility: auto;
@@ -1456,6 +1458,7 @@
             position: relative;
             overflow: hidden;
             aspect-ratio: 4/5;
+            background: var(--bg-dark-2);
         }
 
         .service-card-image img {
@@ -5064,7 +5067,7 @@
                 <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
-                            <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="lazy" decoding="async">
+                            <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
                             <div class="service-number">01</div>
                         </div>
                     </a>
@@ -5078,7 +5081,7 @@
                 <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
-                            <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="lazy" decoding="async">
+                            <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
                             <div class="service-number">02</div>
                         </div>
                     </a>
@@ -5092,7 +5095,7 @@
                 <div class="service-card">
                     <a href="#kalkulator">
                         <div class="service-card-image">
-                            <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="lazy" decoding="async">
+                            <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
                             <div class="service-number">03</div>
                         </div>
                     </a>
@@ -6588,6 +6591,21 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+        // ─── Pause off-screen animations for GPU savings ───
+        // Continuous CSS animations eat GPU while scrolling.
+        // Pause them when not visible, resume when they are.
+        const animPauseObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                entry.target.style.animationPlayState =
+                    entry.isIntersecting ? 'running' : 'paused';
+            });
+        }, { threshold: 0 });
+
+        // Hero drone float + hero marquee + trust marquee
+        document.querySelectorAll('.hero-drone-wrapper img, .marquee-track, .trust-track').forEach(el => {
+            animPauseObserver.observe(el);
+        });
 
         // Legacy support — VS content reveal
         const vsContent = document.getElementById('vsContent');
