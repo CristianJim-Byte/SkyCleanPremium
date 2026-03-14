@@ -24,7 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Preload critical hero poster (not the video — it's click-to-play now) -->
-    <link rel="preload" as="image" href="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.webp">
+    <link rel="preload" as="image" href="Udrone/close-up-redimensionada.webp">
     <link rel="preload" as="image" href="Udrone/Udrone HTML/images/misc/2.webp">
 
     <!-- Lucide Icons (deferred) -->
@@ -1141,11 +1141,13 @@
             background: var(--bg-dark-3);
         }
 
-        /* Background layer */
+        /* Background layer — NO CSS filter on images (kills scroll perf on 17MP images).
+           Darkness is achieved via low opacity + the ::after gradient overlay. */
         .hero-bg {
             position: absolute;
             inset: 0;
             z-index: 1;
+            overflow: hidden;
         }
 
         .hero-bg img,
@@ -1153,13 +1155,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.35;
-            filter: brightness(0.6);
+            opacity: 0.2;
+            /* Promote to own GPU layer so scroll doesn't repaint it */
+            transform: translateZ(0);
         }
 
         .hero-bg video {
-            opacity: 0.45;
-            filter: brightness(0.5) saturate(1.1);
+            opacity: 0.3;
         }
 
         /* When video is playing, hide poster */
@@ -2021,6 +2023,7 @@
             position: absolute;
             inset: 0;
             z-index: 1;
+            overflow: hidden;
         }
 
         .vs-bg img,
@@ -2028,16 +2031,14 @@
             width: 100%;
             height: 120%;
             object-fit: cover;
-            opacity: 0.3;
-            filter: brightness(0.5);
-            transform: translateY(-10%);
+            opacity: 0.18;
+            transform: translateY(-10%) translateZ(0);
         }
 
         .vs-bg video {
-            opacity: 0.4;
-            filter: brightness(0.45) saturate(1.15);
+            opacity: 0.25;
             height: 100%;
-            transform: none;
+            transform: translateZ(0);
         }
 
         .vs-bg video.active {
@@ -4488,10 +4489,10 @@
         /* Mobile video/poster: reduce opacity for readability */
         @media (max-width: 768px) {
             .hero-bg video, .hero-bg .hero-poster {
-                opacity: 0.3;
+                opacity: 0.15;
             }
             .vs-bg video, .vs-bg .vs-poster {
-                opacity: 0.25;
+                opacity: 0.12;
             }
             /* Hide play buttons on mobile — keep poster only for performance */
             .video-play-btn {
@@ -4996,7 +4997,7 @@
     <section class="hero" id="hero">
         <!-- Background video with click-to-play for performance -->
         <div class="hero-bg">
-            <img src="Udrone/close-up-of-a-surveillance-drone-in-blue-sky-being-2026-01-11-09-42-19-utc.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async">
+            <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async">
             <video muted loop playsinline preload="none" data-src="video-hero.mp4" style="display:none;">
             </video>
             <button class="video-play-btn" id="heroPlayBtn" aria-label="Odtwórz wideo">
@@ -5402,7 +5403,7 @@
     <section class="visual-statement">
         <!-- Parallax background — click-to-play for performance -->
         <div class="vs-bg">
-            <img src="Udrone/iot-smart-agriculture-industry-concept-drone-in-p-2026-01-08-23-40-27-utc.webp" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async" class="vs-poster">
+            <img src="Udrone/iot-smart-agriculture-redimensionada.webp" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async" class="vs-poster">
             <video muted loop playsinline preload="none" data-src="video-aerial.mp4" style="display:none;">
             </video>
             <button class="video-play-btn" id="vsPlayBtn" aria-label="Odtwórz wideo">
@@ -6410,6 +6411,10 @@
                     setTimeout(() => {
                         preloader.classList.add('loaded');
                         document.body.style.overflow = '';
+                        // Remove preloader from DOM after fade-out to kill all its animations
+                        setTimeout(() => {
+                            preloader.remove();
+                        }, 1000);
                     }, 200);
                 }
             }
@@ -6602,8 +6607,12 @@
             });
         }, { threshold: 0 });
 
-        // Hero drone float + hero marquee + trust marquee
-        document.querySelectorAll('.hero-drone-wrapper img, .marquee-track, .trust-track').forEach(el => {
+        // All infinite-animation elements: pause when off-screen
+        document.querySelectorAll(
+            '.hero-drone-wrapper img, .marquee-track, .trust-track, ' +
+            '.scroll-line, .vs-marquee-track, .sa-pulse-dot, ' +
+            '.video-play-btn, .popup-card'
+        ).forEach(el => {
             animPauseObserver.observe(el);
         });
 
