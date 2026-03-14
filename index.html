@@ -27,8 +27,12 @@
     <link rel="preload" as="image" href="Udrone/close-up-redimensionada.webp">
     <link rel="preload" as="image" href="img/hero-drone.webp">
 
+    <!-- Lenis loaded at bottom of body before init script -->
+
     <!-- Lucide Icons (deferred) -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js" defer></script>
 
     <style>
         /* ================================================== */
@@ -74,7 +78,21 @@
 
         html {
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            /* scroll-behavior handled by Lenis for Apple-like physics */
+        }
+
+        /* Lenis overrides */
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
         }
 
         /* Reduce motion for users who prefer it */
@@ -165,20 +183,20 @@
         /* ================================================== */
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(60px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateX(-60px) scale(0.98); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
         }
         @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateX(60px) scale(0.98); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
         }
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         /* ── Scroll-Driven Animations (Apple approach) ── */
@@ -216,8 +234,8 @@
         @supports not (animation-timeline: view()) {
             [data-reveal].revealed {
                 animation-fill-mode: both;
-                animation-duration: 1.2s;
-                animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+                animation-duration: 1.6s;
+                animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
             }
 
             [data-reveal="up"].revealed    { animation-name: fadeInUp; }
@@ -228,15 +246,15 @@
             [data-reveal="scale"].revealed { animation-name: fadeInUp; }
             [data-reveal="blur"].revealed  { animation-name: fadeIn; }
 
-            /* Stagger delays — slower, more deliberate */
-            [data-stagger="1"].revealed { animation-delay: 0.08s; }
-            [data-stagger="2"].revealed { animation-delay: 0.16s; }
-            [data-stagger="3"].revealed { animation-delay: 0.24s; }
-            [data-stagger="4"].revealed { animation-delay: 0.32s; }
-            [data-stagger="5"].revealed { animation-delay: 0.4s; }
-            [data-stagger="6"].revealed { animation-delay: 0.48s; }
-            [data-stagger="7"].revealed { animation-delay: 0.56s; }
-            [data-stagger="8"].revealed { animation-delay: 0.64s; }
+            /* Stagger delays — slow, Apple-like deliberate pacing */
+            [data-stagger="1"].revealed { animation-delay: 0.15s; }
+            [data-stagger="2"].revealed { animation-delay: 0.3s; }
+            [data-stagger="3"].revealed { animation-delay: 0.4s; }
+            [data-stagger="4"].revealed { animation-delay: 0.55s; }
+            [data-stagger="5"].revealed { animation-delay: 0.7s; }
+            [data-stagger="6"].revealed { animation-delay: 0.85s; }
+            [data-stagger="7"].revealed { animation-delay: 1.0s; }
+            [data-stagger="8"].revealed { animation-delay: 1.15s; }
 
             /* Before reveal — hide but don't break layout */
             [data-reveal]:not(.revealed) {
@@ -249,6 +267,80 @@
             [data-reveal]:not(.revealed) { opacity: 1 !important; }
             [data-reveal].revealed { animation: none !important; }
             [data-reveal] { animation: none !important; opacity: 1 !important; }
+        }
+
+        /* ================================================== */
+        /* APPLE-STYLE SCROLL EFFECTS                          */
+        /* Parallax, progressive blur, section reveals         */
+        /* ================================================== */
+
+        /* Parallax layers — JS sets --scroll-progress */
+        .hero-content {
+            will-change: transform, opacity;
+        }
+        .hero-drone-wrapper {
+            will-change: transform;
+        }
+
+        /* Section titles scale-up on approach */
+        .section-header {
+            will-change: transform, opacity;
+        }
+
+        /* Smooth image reveals with clip-path */
+        .service-card-image,
+        .project-card {
+            overflow: hidden;
+        }
+        .service-card-image img,
+        .project-card img {
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .service-card:hover .service-card-image img,
+        .project-card:hover img {
+            transform: scale(1.06);
+        }
+
+        /* Parallax depth classes — set by JS */
+        [data-parallax] {
+            will-change: transform;
+            transition: none; /* JS handles via RAF */
+        }
+
+        /* Progressive section entrance */
+        .section-enter {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section-enter.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children within sections */
+        .section-enter.in-view > * {
+            animation: sectionChildFade 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .section-enter.in-view > *:nth-child(1) { animation-delay: 0s; }
+        .section-enter.in-view > *:nth-child(2) { animation-delay: 0.12s; }
+        .section-enter.in-view > *:nth-child(3) { animation-delay: 0.24s; }
+        .section-enter.in-view > *:nth-child(4) { animation-delay: 0.36s; }
+        .section-enter.in-view > *:nth-child(5) { animation-delay: 0.48s; }
+
+        @keyframes sectionChildFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navbar progressive blur on scroll */
+        .navbar {
+            transition: background 0.5s ease, backdrop-filter 0.5s ease, box-shadow 0.5s ease;
+        }
+        .navbar.scrolled {
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         /* ================================================== */
@@ -4896,7 +4988,7 @@
 
             <!-- Hero Image -->
             <div class="popup-hero">
-                <img src="Udrone/remote-control-with-a-tablet-and-take-off-drone-fr-2026-01-09-15-03-40-utc.webp" alt="Dron SkyClean w akcji" loading="eager" decoding="async">
+                <img src="Udrone/remote-control-with-a-tablet-and-take-off-drone-fr-2026-01-09-15-03-40-utc.webp" alt="Dron SkyClean w akcji" loading="lazy" decoding="async">
                 <div class="popup-badge">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     BEZPŁATNA INSPEKCJA
@@ -5181,7 +5273,7 @@
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
             <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
-            <video autoplay muted loop playsinline preload="auto">
+            <video autoplay muted loop playsinline preload="metadata">
                 <source src="video-hero.mp4" type="video/mp4">
             </video>
         </div>
@@ -5248,7 +5340,7 @@
                 <!-- Service 01 — Mycie dachów -->
                 <div class="service-card" data-reveal="up">
                     <div class="service-card-image">
-                        <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
+                        <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="lazy" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">01</div>
                     <div class="service-card-body">
@@ -5280,7 +5372,7 @@
                 <!-- Service 02 — Mycie fotowoltaiki -->
                 <div class="service-card" data-reveal="up" data-stagger="3">
                     <div class="service-card-image">
-                        <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                        <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="lazy" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">02</div>
                     <div class="service-card-body">
@@ -5312,7 +5404,7 @@
                 <!-- Service 03 — Mycie elewacji -->
                 <div class="service-card" data-reveal="up" data-stagger="5">
                     <div class="service-card-image">
-                        <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                        <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="lazy" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">03</div>
                     <div class="service-card-body">
@@ -6585,6 +6677,8 @@
     <!-- ================================================== -->
     <!-- JAVASCRIPT                                          -->
     <!-- ================================================== -->
+    <!-- Lenis: Apple-like smooth scroll physics (must load before init below) -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
     <script>
         // ============================================
         // CINEMATIC PRELOADER — 5 second sequence
@@ -6810,17 +6904,106 @@
             }
         }, { passive: true });
 
-        // Smooth scroll to top
+        // ─── Lenis Smooth Scroll (Apple-like physics) ───
+        let lenis = null;
+        if (typeof Lenis !== 'undefined') {
+            lenis = new Lenis({
+                duration: 1.4,            // Slow, deliberate scroll deceleration
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease-out
+                orientation: 'vertical',
+                gestureOrientation: 'vertical',
+                smoothWheel: true,
+                wheelMultiplier: 0.8,      // Slightly slower wheel = more premium feel
+                touchMultiplier: 1.5,
+                infinite: false,
+            });
+
+            // RAF loop for Lenis
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Stop Lenis when mobile menu is open
+            const origToggle = window.toggleMobileMenu;
+        }
+
+        // Smooth scroll to top (uses Lenis if available)
         if (backToTop) {
             backToTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (lenis) {
+                    lenis.scrollTo(0, { duration: 2 });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             });
         }
 
-        // ─── Scroll Reveal ───
-        // If browser supports scroll-driven animations (animation-timeline: view()),
-        // CSS handles everything — no JS needed.
-        // Otherwise, fall back to IntersectionObserver with slow, Apple-like timing.
+        // Anchor links — use Lenis for smooth navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                const targetId = anchor.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target && lenis) {
+                    e.preventDefault();
+                    lenis.scrollTo(target, { offset: -80, duration: 2 });
+                }
+            });
+        });
+
+        // ─── Apple-style Parallax System ───
+        // Multi-layer parallax driven by scroll position
+        {
+            const heroContent = document.querySelector('.hero-content');
+            const heroDrone = document.querySelector('.hero-drone-wrapper');
+            const heroSection = document.querySelector('.hero');
+            let parallaxTicking = false;
+
+            function updateParallax() {
+                const scrollY = window.scrollY;
+                const vh = window.innerHeight;
+
+                // Hero parallax — content fades out and lifts as you scroll down
+                if (heroSection && heroContent) {
+                    const heroH = heroSection.offsetHeight;
+                    const progress = Math.min(scrollY / heroH, 1);
+
+                    // Hero content: moves up and fades out
+                    heroContent.style.transform = `translateY(${-progress * 120}px)`;
+                    heroContent.style.opacity = 1 - progress * 1.5;
+
+                    // Drone: parallax at different speed
+                    if (heroDrone) {
+                        heroDrone.style.transform = `translateY(${-progress * 80}px)`;
+                    }
+                }
+
+                // Section headers: subtle scale approach
+                document.querySelectorAll('.section-header').forEach(header => {
+                    const rect = header.getBoundingClientRect();
+                    const sectionProgress = (vh - rect.top) / (vh + rect.height);
+                    const clamped = Math.max(0, Math.min(1, sectionProgress));
+
+                    // Subtle scale from 0.96 to 1
+                    const scale = 0.96 + clamped * 0.04;
+                    header.style.transform = `scale(${scale})`;
+                });
+
+                parallaxTicking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!parallaxTicking) {
+                    parallaxTicking = true;
+                    requestAnimationFrame(updateParallax);
+                }
+            }, { passive: true });
+        }
+
+        // ─── Scroll Reveal (Enhanced) ───
+        // Progressive reveal with IntersectionObserver — works alongside Lenis
         if (!CSS.supports('animation-timeline', 'view()')) {
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -6829,9 +7012,33 @@
                         revealObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.08 });
+            }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
 
             document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+        }
+
+        // ─── Section Entrance Observer ───
+        // Each section fades in as a whole with children staggered
+        {
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        sectionObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05, rootMargin: '0px 0px -80px 0px' });
+
+            // Add section-enter to major content sections
+            document.querySelectorAll(
+                '.services .container, .about .container, .projects .container, ' +
+                '.industries .container, .testimonials .container, ' +
+                '.how-it-works .container, .calculator .container, ' +
+                '.service-area .container, .contact .container'
+            ).forEach(el => {
+                el.classList.add('section-enter');
+                sectionObserver.observe(el);
+            });
         }
 
         // ─── Pause off-screen animations for GPU savings ───
@@ -6899,11 +7106,12 @@
             counterObserver.observe(stat);
         });
 
-        // Parallax effect for vs-bg — RAF-throttled for 60fps
+        // Parallax effect for vs-bg — Enhanced with deeper Apple parallax
         {
             const vsSection = document.querySelector('.visual-statement');
             const vsPoster = document.querySelector('.vs-bg .vs-poster');
             const vsVideo = document.querySelector('.vs-bg video');
+            const vsContent = document.getElementById('vsContent');
             let vsTicking = false;
 
             if (vsSection) {
@@ -6911,12 +7119,20 @@
                     if (!vsTicking) {
                         vsTicking = true;
                         requestAnimationFrame(() => {
-                            const bg = (vsVideo && vsVideo.classList.contains('active')) ? vsVideo : vsPoster;
-                            if (bg) {
-                                const rect = vsSection.getBoundingClientRect();
-                                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                                    const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-                                    bg.style.transform = `translateY(${-10 + progress * 20}%)`;
+                            const rect = vsSection.getBoundingClientRect();
+                            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                                const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+
+                                // Background: deeper parallax
+                                const bg = (vsVideo && vsVideo.classList.contains('active')) ? vsVideo : vsPoster;
+                                if (bg) {
+                                    bg.style.transform = `translateY(${-15 + progress * 30}%) scale(${1 + progress * 0.05})`;
+                                }
+
+                                // Content: subtle float up
+                                if (vsContent) {
+                                    const contentFloat = (0.5 - progress) * 40;
+                                    vsContent.style.transform = `translateY(${contentFloat}px)`;
                                 }
                             }
                             vsTicking = false;
@@ -7166,13 +7382,18 @@
             updateProgress();
         }
 
-        // Mobile menu toggle
+        // Mobile menu toggle (integrates with Lenis)
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             const overlay = document.getElementById('mobileOverlay');
             menu.classList.toggle('open');
             overlay.classList.toggle('open');
-            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+            const isOpen = menu.classList.contains('open');
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+            // Stop/resume Lenis during mobile menu
+            if (lenis) {
+                isOpen ? lenis.stop() : lenis.start();
+            }
         }
     </script>
 
