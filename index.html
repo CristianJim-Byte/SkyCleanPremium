@@ -1142,11 +1142,13 @@
 
         .hero-bg img,
         .hero-bg video {
+            /* Both layers must overlap (not stack) for cross-fade */
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             opacity: 0.2;
-            /* Promote to own GPU layer so scroll doesn't repaint it */
             transform: translateZ(0);
         }
 
@@ -2000,6 +2002,8 @@
 
         .vs-bg img,
         .vs-bg video {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 120%;
             object-fit: cover;
@@ -6650,22 +6654,45 @@
         }
 
         // ─── Video Autoplay (Apple approach) ───
-        // Simple: detect when browser plays, cross-fade with CSS class.
-        // The <video autoplay muted loop playsinline> handles playback natively.
-        // JS only adds the visual cross-fade class.
+        // Both HTML autoplay AND JS .play() for maximum browser compatibility.
+        // Cross-fade poster→video via CSS class when playback starts.
+        // KEY FIX: Force reflow before adding .is-playing to prevent
+        // CSS transition getting stuck at currentTime:0.
         {
-            // ── Hero video: browser autoplays it, we just cross-fade ──
+            function showVideo(video) {
+                // Remove display:none if present (VS video lazy-load)
+                video.style.removeProperty('display');
+                // Force browser to compute the opacity:0 state FIRST
+                video.offsetHeight; // trigger reflow
+                // Now add the class — transition animates from computed 0 → target
+                video.classList.add('is-playing');
+            }
+
+            // ── Hero video: force play + cross-fade ──
             const heroVideo = document.querySelector('.hero-bg video');
             if (heroVideo) {
-                // Listen for the 'playing' event — fires when video actually starts
                 heroVideo.addEventListener('playing', () => {
-                    heroVideo.classList.add('is-playing');
+                    showVideo(heroVideo);
                 }, { once: true });
 
-                // If autoplay already started before JS ran, handle it
+                // If autoplay already started before JS ran
                 if (!heroVideo.paused) {
-                    heroVideo.classList.add('is-playing');
+                    showVideo(heroVideo);
+                } else {
+                    // Autoplay didn't fire — force it from JS
+                    heroVideo.muted = true;
+                    heroVideo.play().catch(() => {});
                 }
+
+                // Safety net: if video loaded but 'playing' event was missed
+                heroVideo.addEventListener('loadeddata', () => {
+                    setTimeout(() => {
+                        if (!heroVideo.classList.contains('is-playing')) {
+                            heroVideo.muted = true;
+                            heroVideo.play().then(() => showVideo(heroVideo)).catch(() => {});
+                        }
+                    }, 500);
+                }, { once: true });
             }
 
             // ── VS video: load & play when scrolled into view ──
@@ -6675,14 +6702,15 @@
                 let vsStarted = false;
 
                 vsVideo.addEventListener('playing', () => {
-                    vsVideo.classList.add('is-playing');
+                    showVideo(vsVideo);
                 }, { once: true });
 
                 const vsVideoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             if (!vsStarted) {
-                                // First time: load the video
+                                // First time: unhide, load, and play
+                                vsVideo.style.removeProperty('display');
                                 vsVideo.preload = 'auto';
                                 vsVideo.load();
                                 vsVideo.play().catch(() => {});
