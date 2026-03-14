@@ -1469,15 +1469,8 @@
             object-fit: cover;
         }
 
-        /* Hover zoom only for real mouse devices (not trackpad scroll-through) */
-        @media (hover: hover) and (pointer: fine) {
-            .service-card-image img {
-                transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .service-card:hover .service-card-image img {
-                transform: scale(1.05);
-            }
-        }
+        /* Hover zoom REMOVED — caused scroll jank on Mac trackpad.
+           The trackpad triggers :hover during scroll, creating GPU repaints. */
 
         /* Number badge — UDrone signature */
         .service-number {
@@ -1682,11 +1675,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .about-mosaic-img:hover img {
-            transform: scale(1.08);
         }
 
         /* Floating accent badge — centered on mosaic */
@@ -1855,14 +1843,7 @@
             object-fit: cover;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .project-card img {
-                transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .project-card:hover img {
-                transform: scale(1.05);
-            }
-        }
+        /* Hover zoom REMOVED — trackpad scroll jank */
 
         /* Bottom gradient — always visible */
         .project-card::after {
@@ -2377,14 +2358,7 @@
             object-fit: cover;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .industry-card-image img {
-                transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-            .industry-card:hover .industry-card-image img {
-                transform: scale(1.05);
-            }
-        }
+        /* Hover zoom REMOVED — trackpad scroll jank */
 
         /* Card Gradient Overlay */
         .industry-card-image::after {
@@ -5059,8 +5033,8 @@
     <section class="services" id="uslugi">
         <div class="container">
             <div class="section-header">
-                <div class="section-subtitle" data-reveal="fade">Nasze usługi</div>
-                <h2 class="section-title" data-reveal="fade"><span class="accent">Profesjonalne</span> i <span class="accent">bezpieczne</span> mycie z powietrza</h2>
+                <div class="section-subtitle">Nasze usługi</div>
+                <h2 class="section-title"><span class="accent">Profesjonalne</span> i <span class="accent">bezpieczne</span> mycie z powietrza</h2>
             </div>
 
             <div class="services-grid">
