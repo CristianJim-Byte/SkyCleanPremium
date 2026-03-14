@@ -6669,15 +6669,30 @@
             // ── Hero video: autoplay after preloader finishes ──
             const heroVideo = document.querySelector('.hero-bg video');
             if (heroVideo) {
-                // Wait for video to be ready enough to play smoothly
-                heroVideo.addEventListener('canplaythrough', () => {
-                    activateVideo(heroVideo);
-                }, { once: true });
+                let heroActivated = false;
 
-                // Start loading after a short delay (let critical content render first)
+                function tryActivateHero() {
+                    if (heroActivated) return;
+                    heroActivated = true;
+                    activateVideo(heroVideo);
+                }
+
+                // Fire on whichever event comes first
+                heroVideo.addEventListener('canplay', tryActivateHero, { once: true });
+                heroVideo.addEventListener('canplaythrough', tryActivateHero, { once: true });
+                heroVideo.addEventListener('loadeddata', tryActivateHero, { once: true });
+
+                // Start loading after preloader is done
                 setTimeout(() => {
                     heroVideo.preload = 'auto';
                     heroVideo.load();
+
+                    // Safety net: if no event fires within 8s, try playing anyway
+                    setTimeout(() => {
+                        if (!heroActivated && heroVideo.readyState >= 2) {
+                            tryActivateHero();
+                        }
+                    }, 8000);
                 }, 1500);
             }
 
@@ -6685,27 +6700,32 @@
             const vsVideo = document.querySelector('.vs-bg video');
             if (vsVideo) {
                 let vsLoaded = false;
-                const vsObserver = new IntersectionObserver((entries) => {
+                let vsActivated = false;
+
+                function tryActivateVS() {
+                    if (vsActivated) return;
+                    vsActivated = true;
+                    activateVideo(vsVideo);
+                }
+
+                const vsVideoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             if (!vsLoaded) {
-                                // First time in viewport — start loading
+                                vsVideo.addEventListener('canplay', tryActivateVS, { once: true });
+                                vsVideo.addEventListener('loadeddata', tryActivateVS, { once: true });
                                 vsVideo.preload = 'auto';
                                 vsVideo.load();
-                                vsVideo.addEventListener('canplaythrough', () => {
-                                    activateVideo(vsVideo);
-                                }, { once: true });
                                 vsLoaded = true;
                             } else if (vsVideo.paused && vsVideo.classList.contains('active')) {
                                 vsVideo.play().catch(() => {});
                             }
                         } else {
-                            // Off-screen — pause to save GPU/battery
                             if (!vsVideo.paused) vsVideo.pause();
                         }
                     });
                 }, { threshold: 0.15 });
-                vsObserver.observe(document.querySelector('.visual-statement'));
+                vsVideoObserver.observe(document.querySelector('.visual-statement'));
             }
         }
 
