@@ -1281,16 +1281,18 @@
 
         .hero-bg video {
             opacity: 0;
-            transition: opacity 2.5s ease;
+            transform: scale(1.04) translateZ(0);
+            transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         /* When video is playing, cross-fade from poster — video takes prominence */
         .hero-bg video.is-playing {
-            opacity: 0.55;
+            opacity: 0.7;
+            transform: scale(1) translateZ(0);
         }
         .hero-bg video.is-playing ~ .hero-poster {
             opacity: 0;
-            transition: opacity 2s ease;
+            transition: opacity 2.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .hero-bg::after {
@@ -1299,10 +1301,10 @@
             inset: 0;
             background: linear-gradient(
                 180deg,
-                rgba(15, 23, 42, 0.3) 0%,
-                rgba(15, 23, 42, 0.1) 40%,
-                rgba(17, 24, 39, 0.7) 80%,
-                rgba(17, 24, 39, 1) 100%
+                rgba(15, 23, 42, 0.15) 0%,
+                rgba(15, 23, 42, 0.05) 40%,
+                rgba(17, 24, 39, 0.5) 80%,
+                rgba(17, 24, 39, 0.95) 100%
             );
         }
 
@@ -2509,17 +2511,18 @@
         .vs-bg video {
             opacity: 0;
             height: 100%;
-            transform: translateZ(0);
-            transition: opacity 2.5s ease;
+            transform: scale(1.04) translateZ(0);
+            transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         /* Video takes full prominence over poster */
         .vs-bg video.is-playing {
-            opacity: 0.5;
+            opacity: 0.65;
+            transform: scale(1) translateZ(0);
         }
         .vs-bg video.is-playing ~ .vs-poster {
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 2.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .vs-bg::after {
@@ -2529,8 +2532,8 @@
             background: linear-gradient(
                 180deg,
                 var(--bg-dark-1) 0%,
-                rgba(17, 24, 39, 0.2) 20%,
-                rgba(17, 24, 39, 0.2) 80%,
+                rgba(17, 24, 39, 0.1) 20%,
+                rgba(17, 24, 39, 0.1) 80%,
                 var(--bg-dark-1) 100%
             );
         }
