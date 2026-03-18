@@ -1245,7 +1245,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.15;
+            opacity: 0.25;
             transform: translateZ(0);
         }
 
@@ -1257,7 +1257,7 @@
         }
         /* When video is playing, cross-fade from poster — video takes prominence */
         .hero-bg video.is-playing {
-            opacity: 0.7;
+            opacity: 0.85;
             transform: scale(1) translateZ(0);
         }
         .hero-bg video.is-playing ~ .hero-poster {
@@ -2303,22 +2303,21 @@
             position: absolute;
             inset: 0;
             width: 100%;
-            height: 120%;
+            height: 100%;
             object-fit: cover;
-            opacity: 0.12;
-            transform: translateY(-10%) translateZ(0);
+            opacity: 0.2;
+            transform: translateZ(0);
         }
 
         .vs-bg video {
             opacity: 0;
-            height: 100%;
             transform: scale(1.04) translateZ(0);
             transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         /* Video takes full prominence over poster */
         .vs-bg video.is-playing {
-            opacity: 0.65;
+            opacity: 0.8;
             transform: scale(1) translateZ(0);
         }
         .vs-bg video.is-playing ~ .vs-poster {
@@ -4755,10 +4754,10 @@
         /* Mobile video/poster: reduce opacity for readability */
         @media (max-width: 768px) {
             .hero-bg video, .hero-bg .hero-poster {
-                opacity: 0.15;
+                opacity: 0.2;
             }
             .vs-bg video, .vs-bg .vs-poster {
-                opacity: 0.12;
+                opacity: 0.18;
             }
             /* Video play buttons removed — videos autoplay now */
             /* Dron más pequeño en móvil */
@@ -5257,7 +5256,8 @@
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
             <video autoplay muted loop playsinline preload="auto">
-                <source src="img/video/1header.mov" type="video/mp4">
+                <source src="img/video/1header.mp4" type="video/mp4">
+                <source src="img/video/1header.mov" type="video/quicktime">
             </video>
             <img src="img/images/drones/Un_primer_plano_extremo_de_la__Nano_Banana_2_58381.jpg" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
         </div>
