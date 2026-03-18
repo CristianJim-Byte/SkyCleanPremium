@@ -1394,197 +1394,8 @@
             50% { transform: translateY(-15px); }
         }
 
-<<<<<<< HEAD
         /* Wave divider — smooth section separator */
         .wave-divider {
-=======
-        /* 3D Mini-Drone — follows cursor across the page */
-        #miniDroneCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9998;
-            pointer-events: none;
-        }
-
-        /* Hide on mobile/touch */
-        @media (max-width: 768px), (hover: none) {
-            #miniDroneCanvas { display: none !important; }
-        }
-
-        /* ================================================== */
-        /* CUSTOM CURSOR — Magnetic glow trail                 */
-        /* ================================================== */
-        .cursor-glow {
-            position: fixed;
-            width: 28px;
-            height: 28px;
-            border: 2px solid rgba(14, 165, 233, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
-                        width 0.3s ease, height 0.3s ease,
-                        border-color 0.3s ease, background 0.3s ease;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: screen;
-            backdrop-filter: blur(1px);
-        }
-
-        .cursor-dot {
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            background: var(--sky-blue);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 100000;
-            transform: translate(-50%, -50%);
-            transition: transform 0.08s ease;
-        }
-
-        /* Cursor states */
-        .cursor-glow.hovering {
-            width: 56px;
-            height: 56px;
-            border-color: rgba(245, 158, 11, 0.8);
-            background: rgba(245, 158, 11, 0.08);
-        }
-
-        .cursor-glow.clicking {
-            transform: translate(-50%, -50%) scale(0.7);
-            border-color: rgba(14, 165, 233, 1);
-            background: rgba(14, 165, 233, 0.15);
-        }
-
-        /* Hide on touch devices */
-        @media (hover: none), (max-width: 768px) {
-            .cursor-glow, .cursor-dot { display: none !important; }
-        }
-
-        /* Hide default cursor on desktop when custom cursor is active */
-        @media (hover: hover) and (min-width: 769px) {
-            body.custom-cursor { cursor: none; }
-            body.custom-cursor a, body.custom-cursor button,
-            body.custom-cursor input, body.custom-cursor select,
-            body.custom-cursor textarea { cursor: none; }
-        }
-
-        /* ================================================== */
-        /* MICRO-INTERACTIONS — Premium feel                   */
-        /* ================================================== */
-
-        /* ── Scroll progress bar (top of page) ── */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(90deg, var(--sky-blue), var(--amber));
-            z-index: 100001;
-            transition: none;
-            border-radius: 0 2px 2px 0;
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-        }
-
-        /* ── Nav links — animated underline ── */
-        .nav-links a {
-            position: relative;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--sky-blue);
-            transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), left 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            border-radius: 1px;
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-            left: 0;
-        }
-
-        /* ── Magnetic button base — JS adds transform ── */
-        .magnetic-wrap {
-            display: inline-block;
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        /* ── Tilt 3D on cards ── */
-        .service-card,
-        .project-card,
-        .industry-card {
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                        box-shadow 0.5s ease;
-        }
-
-        /* ── Ripple effect on CTA buttons ── */
-        .ripple-container {
-            position: relative;
-            overflow: hidden;
-        }
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(0);
-            animation: rippleAnim 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            pointer-events: none;
-        }
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
-        }
-
-        /* ── Text shimmer on section titles ── */
-        .section-title .accent {
-            background: linear-gradient(90deg, var(--sky-blue), var(--amber), var(--sky-blue));
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: none;
-        }
-        .section-title .accent.shimmer-active {
-            animation: textShimmer 2.5s ease-in-out;
-        }
-        @keyframes textShimmer {
-            0% { background-position: 100% 0; }
-            100% { background-position: -100% 0; }
-        }
-
-        /* ── Stat counter glow pulse on reveal ── */
-        .vs-stat .counter {
-            transition: text-shadow 0.5s ease;
-        }
-        .vs-stat.counted .counter {
-            text-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
-        }
-
-        /* ── Smooth focus glow on form inputs ── */
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3), 0 0 20px rgba(14, 165, 233, 0.1) !important;
-            transition: box-shadow 0.4s ease !important;
-        }
-
-        /* ── Tooltip-style hover on trust badges ── */
-        .trust-item {
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .trust-item:hover {
-            transform: scale(1.08);
-        }
-
-        /* Marquee decorative bar — signature UDrone element */
-        .hero-marquee {
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
             position: relative;
             z-index: 4;
             width: 100%;
@@ -1599,20 +1410,8 @@
             height: clamp(60px, 8vw, 120px);
         }
 
-<<<<<<< HEAD
         .wave-divider .wave-back {
             fill: rgba(14, 165, 233, 0.08);
-=======
-        .marquee-bars {
-            font-family: var(--font-display);
-            font-size: clamp(50px, 7vw, 100px);
-            font-weight: bold;
-            color: var(--sky-blue);
-            line-height: 1;
-            white-space: nowrap;
-            user-select: none;
-            letter-spacing: -2px;
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
         }
 
         .wave-divider .wave-mid {
@@ -5180,11 +4979,7 @@
 
             <!-- Hero Image -->
             <div class="popup-hero">
-<<<<<<< HEAD
                 <img src="img/images/drones/A_fotorrealista_medium_eye-lev_Nano_Banana_2_77848.jpg" alt="Dron SkyClean w akcji" loading="eager" decoding="async">
-=======
-                <img src="Udrone/remote-control-with-a-tablet-and-take-off-drone-fr-2026-01-09-15-03-40-utc.webp" alt="Dron SkyClean w akcji" loading="lazy" decoding="async">
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
                 <div class="popup-badge">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     BEZPŁATNA INSPEKCJA
@@ -5461,15 +5256,9 @@
         <!-- Background video — autoplay muted (Apple approach).
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
-<<<<<<< HEAD
             <img src="img/images/drones/Un_primer_plano_extremo_de_la__Nano_Banana_2_58381.jpg" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
             <video autoplay muted loop playsinline preload="auto">
                 <source src="img/video/1header.mov" type="video/mp4">
-=======
-            <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
-            <video autoplay muted loop playsinline preload="metadata">
-                <source src="video-hero.mp4" type="video/mp4">
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
             </video>
         </div>
 
@@ -5537,11 +5326,7 @@
                 <!-- Service 01 — Mycie dachów -->
                 <div class="service-card" data-reveal="up">
                     <div class="service-card-image">
-<<<<<<< HEAD
                         <img src="img/images/drones/A_detailed_realistic_photograp_Nano_Banana_2_20869.jpg" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
-=======
-                        <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="lazy" decoding="async" width="800" height="533">
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
                     </div>
                     <div class="service-number">01</div>
                     <div class="service-card-body">
@@ -5573,11 +5358,7 @@
                 <!-- Service 02 — Mycie fotowoltaiki -->
                 <div class="service-card" data-reveal="up" data-stagger="3">
                     <div class="service-card-image">
-<<<<<<< HEAD
                         <img src="img/images/drones/A_fotorrealista_medium_shot_ca_Nano_Banana_2_06487%20copia.jpg" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
-=======
-                        <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="lazy" decoding="async" width="800" height="533">
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
                     </div>
                     <div class="service-number">02</div>
                     <div class="service-card-body">
@@ -5609,11 +5390,7 @@
                 <!-- Service 03 — Mycie elewacji -->
                 <div class="service-card" data-reveal="up" data-stagger="5">
                     <div class="service-card-image">
-<<<<<<< HEAD
                         <img src="img/images/drones/Facade_Cleaning_Matching_the_o_Nano_Banana_2_75303.jpg" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
-=======
-                        <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="lazy" decoding="async" width="800" height="533">
->>>>>>> 461373b2db5377f1882001923755222c7ce8d523
                     </div>
                     <div class="service-number">03</div>
                     <div class="service-card-body">
