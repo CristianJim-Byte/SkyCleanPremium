@@ -9,4 +9,9 @@ Udrone/**/*.MP4
 !video-hero.mp4
 !video-aerial.mp4
 !video-solar.mp4
+<<<<<<< HEAD
 node_modules/
+=======
+Oferta_SkyClean_Horizon.docx
+>>>>>>> 461373b2db5377f1882001923755222c7ce8d523
+img/video/*.mov
