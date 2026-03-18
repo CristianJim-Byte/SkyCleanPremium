@@ -24,8 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Preload critical hero assets (poster shows instantly, video fades in after) -->
-    <link rel="preload" as="image" href="Udrone/close-up-redimensionada.webp">
-    <link rel="preload" as="image" href="img/hero-drone.webp">
+    <link rel="preload" as="image" href="img/images/drones/Un_primer_plano_extremo_de_la__Nano_Banana_2_58381.jpg">
+    <link rel="preload" as="image" href="img/images/logo/DSC01472.png">
 
     <!-- Lucide Icons (deferred) -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
@@ -360,41 +360,24 @@
             height: 100%;
         }
 
-        /* Logo text — SKYCLEAN */
+        /* Logo image — SKYCLEAN */
         .preloader-logo {
-            font-family: var(--font-display);
-            font-size: clamp(48px, 8vw, 80px);
-            letter-spacing: 12px;
-            line-height: 1;
-            color: transparent;
             position: relative;
             overflow: hidden;
         }
 
-        .preloader-logo-text {
-            display: inline-block;
-            background: linear-gradient(90deg, #fff 0%, rgba(14,165,233,1) 50%, #fff 100%);
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: logoShimmer 2.5s ease-in-out infinite;
+        .preloader-logo-img {
+            height: clamp(120px, 20vw, 200px);
+            width: auto;
+            object-fit: contain;
             opacity: 0;
+            filter: blur(10px);
+            animation: logoImgReveal 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
         }
 
-        .preloader-logo-text.show {
-            animation: logoReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-                       logoShimmer 2.5s ease-in-out 1s infinite;
-        }
-
-        @keyframes logoReveal {
-            0% { opacity: 0; letter-spacing: 30px; filter: blur(10px); }
-            100% { opacity: 1; letter-spacing: 12px; filter: blur(0); }
-        }
-
-        @keyframes logoShimmer {
-            0% { background-position: 200% center; }
-            100% { background-position: -200% center; }
+        @keyframes logoImgReveal {
+            0% { opacity: 0; filter: blur(10px); transform: scale(0.8); }
+            100% { opacity: 1; filter: blur(0); transform: scale(1); }
         }
 
         /* Tagline */
@@ -990,30 +973,17 @@
         .nav-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
 
-        .nav-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--sky-blue);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(-5deg);
+        .nav-logo-img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
 
-        .nav-logo-text {
-            font-family: var(--font-display);
-            font-size: 28px;
-            color: var(--text-primary);
-            letter-spacing: 2px;
-            line-height: 1;
-        }
-
-        .nav-logo-text span {
-            color: var(--sky-blue);
+        .nav-logo:hover .nav-logo-img {
+            transform: scale(1.05);
         }
 
         .nav-links {
@@ -1322,6 +1292,7 @@
         .hero-drone-wrapper img {
             width: 100%;
             animation: floatDrone 6s ease-in-out infinite;
+            filter: drop-shadow(0 25px 50px rgba(14, 165, 233, 0.35));
         }
 
         @keyframes floatDrone {
@@ -1329,35 +1300,49 @@
             50% { transform: translateY(-15px); }
         }
 
-        /* Marquee decorative bar — signature UDrone element */
-        .hero-marquee {
+        /* Wave divider — smooth section separator */
+        .wave-divider {
             position: relative;
             z-index: 4;
+            width: 100%;
             overflow: hidden;
-            padding: 8px 0;
+            line-height: 0;
             margin-top: -60px;
         }
 
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: marqueeScroll 20s linear infinite;
+        .wave-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(60px, 8vw, 120px);
         }
 
-        .marquee-bars {
-            font-family: var(--font-display);
-            font-size: clamp(80px, 10vw, 150px);
-            font-weight: bold;
-            color: var(--sky-blue);
-            line-height: 1;
-            white-space: nowrap;
-            user-select: none;
-            letter-spacing: -2px;
+        .wave-divider .wave-back {
+            fill: rgba(14, 165, 233, 0.08);
         }
 
-        @keyframes marqueeScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .wave-divider .wave-mid {
+            fill: rgba(14, 165, 233, 0.15);
+        }
+
+        .wave-divider .wave-front {
+            fill: var(--bg-dark-1, #111827);
+        }
+
+        /* Subtle animation for the middle wave */
+        .wave-divider .wave-animated {
+            animation: waveFloat 8s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        /* Flipped wave (for top of sections) */
+        .wave-divider-flip {
+            margin-top: 0;
+            margin-bottom: -2px;
+        }
+
+        @keyframes waveFloat {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-15px); }
         }
 
         /* ================================================== */
@@ -4219,16 +4204,11 @@
         }
 
         /* Footer Brand */
-        .footer-brand-name {
-            font-family: var(--font-display);
-            font-size: 32px;
-            color: var(--text-primary);
-            letter-spacing: 3px;
+        .footer-brand-logo {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
             margin-bottom: 4px;
-        }
-
-        .footer-brand-name span {
-            color: var(--sky-blue);
         }
 
         .footer-brand-tagline {
@@ -4631,7 +4611,7 @@
             .hero-title {
                 letter-spacing: 1px;
             }
-            .hero-marquee {
+            .wave-divider {
                 margin-top: -30px;
             }
             .scroll-indicator {
@@ -4685,9 +4665,9 @@
                 opacity: 0.12;
             }
             /* Video play buttons removed — videos autoplay now */
-            /* Hide hero drone image on small screens — video is enough */
+            /* Dron más pequeño en móvil */
             .hero-drone-wrapper {
-                display: none;
+                max-width: 95%;
             }
             /* Hero takes full viewport */
             .hero {
@@ -4836,7 +4816,7 @@
 
             <!-- Logo -->
             <div class="preloader-logo">
-                <span class="preloader-logo-text">SKYCLEAN</span>
+                <img src="img/images/logo/logosky.png" alt="SkyClean Premium" class="preloader-logo-img">
             </div>
 
             <!-- Tagline -->
@@ -4896,7 +4876,7 @@
 
             <!-- Hero Image -->
             <div class="popup-hero">
-                <img src="Udrone/remote-control-with-a-tablet-and-take-off-drone-fr-2026-01-09-15-03-40-utc.webp" alt="Dron SkyClean w akcji" loading="eager" decoding="async">
+                <img src="img/images/drones/A_fotorrealista_medium_eye-lev_Nano_Banana_2_77848.jpg" alt="Dron SkyClean w akcji" loading="eager" decoding="async">
                 <div class="popup-badge">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     BEZPŁATNA INSPEKCJA
@@ -4967,14 +4947,7 @@
     <nav class="navbar" id="navbar">
         <div class="container">
             <a href="#" class="nav-logo">
-                <div class="nav-logo-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5"/>
-                        <path d="M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <div class="nav-logo-text">SKY<span>CLEAN</span></div>
+                <img src="img/images/logo/logosky.png" alt="SkyClean Premium" class="nav-logo-img">
             </a>
 
             <ul class="nav-links">
@@ -5130,7 +5103,7 @@
                 </div>
             </div>
 
-            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="nav-cta desktop" target="_blank">
+            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="nav-cta desktop" target="_blank">
                 Bezpłatna wycena
             </a>
 
@@ -5161,7 +5134,7 @@
             <li><a href="#kontakt" onclick="toggleMobileMenu()">Kontakt</a></li>
         </ul>
         <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 12px;">
-            <a href="https://wa.me/48727527037" class="nav-cta" target="_blank" style="display:block; text-align:center;">
+            <a href="https://wa.me/48880842310" class="nav-cta" target="_blank" style="display:block; text-align:center;">
                 Bezpłatna wycena
             </a>
             <div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:1px solid var(--border-subtle); border-radius:10px; color:var(--text-secondary); font-size:13px; font-weight:600; letter-spacing:0.3px;">
@@ -5180,9 +5153,9 @@
         <!-- Background video — autoplay muted (Apple approach).
              Poster shows instantly, video cross-fades in when ready. -->
         <div class="hero-bg">
-            <img src="Udrone/close-up-redimensionada.webp" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
+            <img src="img/images/drones/Un_primer_plano_extremo_de_la__Nano_Banana_2_58381.jpg" alt="Dron profesjonalny na tle nieba — SkyClean mycie dronem" width="1920" height="1280" class="hero-poster" decoding="async" fetchpriority="high">
             <video autoplay muted loop playsinline preload="auto">
-                <source src="video-hero.mp4" type="video/mp4">
+                <source src="img/video/1header.mov" type="video/mp4">
             </video>
         </div>
 
@@ -5198,7 +5171,7 @@
                 </h1>
 
                 <div class="hero-cta-wrapper">
-                    <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="hero-cta" target="_blank">
+                    <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="hero-cta" target="_blank">
                         Zamów bezpłatną wycenę
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
@@ -5212,19 +5185,21 @@
             </div>
         </div>
 
-        <!-- Drone floating image -->
+        <!-- Dron AGZ flotante en hero -->
         <div class="hero-drone-wrapper">
-            <img src="img/hero-drone.webp" alt="Dron profesjonalny SkyClean" fetchpriority="high" decoding="async" width="600" height="400">
+            <img src="img/images/logo/DSC01472.png" alt="Dron AGZ SkyClean Premium — profesjonalne mycie dronem" fetchpriority="high" decoding="async">
         </div>
 
-        <!-- Decorative marquee bar — UDrone signature -->
-        <div class="hero-marquee">
-            <div class="marquee-track">
-                <span class="marquee-bars">|||||||||||||||||||||||||||&nbsp;&nbsp;&nbsp;</span>
-                <span class="marquee-bars">|||||||||||||||||||||||||||&nbsp;&nbsp;&nbsp;</span>
-                <span class="marquee-bars">|||||||||||||||||||||||||||&nbsp;&nbsp;&nbsp;</span>
-                <span class="marquee-bars">|||||||||||||||||||||||||||&nbsp;&nbsp;&nbsp;</span>
-            </div>
+        <!-- Wave divider — smooth section separator -->
+        <div class="wave-divider">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Back wave — subtle glow -->
+                <path class="wave-back" d="M0,80 C240,20 480,100 720,60 C960,20 1200,90 1440,50 L1440,120 L0,120 Z"/>
+                <!-- Middle wave — animated -->
+                <path class="wave-mid wave-animated" d="M0,90 C180,40 420,110 660,65 C900,20 1140,85 1440,55 L1440,120 L0,120 Z"/>
+                <!-- Front wave — solid, matches next section bg -->
+                <path class="wave-front" d="M0,95 C320,60 640,110 960,75 C1120,58 1280,90 1440,70 L1440,120 L0,120 Z"/>
+            </svg>
         </div>
 
         <!-- Scroll indicator -->
@@ -5248,7 +5223,7 @@
                 <!-- Service 01 — Mycie dachów -->
                 <div class="service-card" data-reveal="up">
                     <div class="service-card-image">
-                        <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-06-10-38-11-utc.webp" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
+                        <img src="img/images/drones/A_detailed_realistic_photograp_Nano_Banana_2_20869.jpg" alt="Mycie dachów dronem — SkyClean Ostrów Wielkopolski" loading="eager" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">01</div>
                     <div class="service-card-body">
@@ -5280,7 +5255,7 @@
                 <!-- Service 02 — Mycie fotowoltaiki -->
                 <div class="service-card" data-reveal="up" data-stagger="3">
                     <div class="service-card-image">
-                        <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                        <img src="img/images/drones/A_fotorrealista_medium_shot_ca_Nano_Banana_2_06487%20copia.jpg" alt="Mycie paneli fotowoltaicznych dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">02</div>
                     <div class="service-card-body">
@@ -5312,7 +5287,7 @@
                 <!-- Service 03 — Mycie elewacji -->
                 <div class="service-card" data-reveal="up" data-stagger="5">
                     <div class="service-card-image">
-                        <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
+                        <img src="img/images/drones/Facade_Cleaning_Matching_the_o_Nano_Banana_2_75303.jpg" alt="Mycie elewacji budynków dronem — SkyClean" loading="eager" decoding="async" width="800" height="533">
                     </div>
                     <div class="service-number">03</div>
                     <div class="service-card-body">
@@ -5493,16 +5468,16 @@
                 <div class="about-images about-reveal" data-reveal="left">
                     <div class="about-mosaic">
                         <div class="about-mosaic-img">
-                            <img src="Udrone/male-operator-wearing-a-protective-uniform-and-a-m-2026-01-11-10-58-17-utc.webp" alt="Operator dronowy SkyClean w stroju ochronnym" loading="lazy" decoding="async">
+                            <img src="img/images/drones/A_fotorrealista_medium_eye-lev_Nano_Banana_2_77848.jpg" alt="Operator dronowy SkyClean w stroju ochronnym" loading="lazy" decoding="async">
                         </div>
                         <div class="about-mosaic-img">
-                            <img src="Udrone/engineers-inspecting-wind-turbine-structure-2026-01-11-11-05-21-utc.webp" alt="Inspekcja dronem turbiny wiatrowej" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Un_primer_plano_macro_de_un_so_Nano_Banana_2_06154.jpg" alt="Inspekcja dronem turbiny wiatrowej" loading="lazy" decoding="async">
                         </div>
                         <div class="about-mosaic-img">
-                            <img src="Udrone/remote-control-with-a-tablet-and-take-off-drone-fr-2026-01-09-15-03-40-utc.webp" alt="Sterowanie dronem z tabletu" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Un_primer_plano_macro_fotorrea_Nano_Banana_2_89555.jpg" alt="Technologia AGZ — brazo de fibra de carbono z LED" loading="lazy" decoding="async">
                         </div>
                         <div class="about-mosaic-img">
-                            <img src="Udrone/male-operators-set-up-the-agro-drone-checking-eve-2026-01-11-10-58-17-utc.webp" alt="Przygotowanie drona do pracy" loading="lazy" decoding="async">
+                            <img src="img/images/drones/A_fotorrealista_extreme_close-_Nano_Banana_2_73444.jpg" alt="Przygotowanie drona do pracy" loading="lazy" decoding="async">
                         </div>
                     </div>
                     <!-- Floating badge -->
@@ -5547,7 +5522,7 @@
                         </li>
                     </ul>
 
-                    <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="about-cta" target="_blank">
+                    <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="about-cta" target="_blank">
                         Porozmawiajmy o Twoim projekcie
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
@@ -5571,7 +5546,7 @@
             <div class="projects-grid">
                 <!-- Project 1 — Mycie dachu kościoła -->
                 <div class="project-card" data-reveal="up" data-stagger="3">
-                    <img src="Udrone/professional-maintenance-engineer-working-at-wind-2026-01-09-12-15-41-utc.webp" alt="Mycie dachu dronem — realizacja SkyClean" loading="lazy" decoding="async">
+                    <img src="img/images/projects/Roof_Cleaning_Matching_the_ori_Nano_Banana_2_98562.jpg" alt="Mycie dachu dronem — realizacja SkyClean" loading="lazy" decoding="async">
 
                     <div class="project-card-title">
                         <div class="project-tag">Mycie dachu</div>
@@ -5582,7 +5557,7 @@
                         <div class="overlay-tag">Mycie dachu</div>
                         <h3>Hala magazynowa 2400 m²</h3>
                         <p>Kompleksowe usunięcie mchu i zabrudzeń z dachu hali przemysłowej. Realizacja w 1 dzień roboczy bez przerw w pracy obiektu.</p>
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20dachu." class="overlay-btn" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20dachu." class="overlay-btn" target="_blank">
                             Zapytaj o wycenę
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>
@@ -5591,7 +5566,7 @@
 
                 <!-- Project 2 — Mycie fotowoltaiki -->
                 <div class="project-card" data-reveal="up" data-stagger="4">
-                    <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych dronem — realizacja SkyClean" loading="lazy" decoding="async">
+                    <img src="img/images/drones/Solar_Panel_Cleaning_Matching__Nano_Banana_2_19831.jpg" alt="Mycie paneli fotowoltaicznych dronem — realizacja SkyClean" loading="lazy" decoding="async">
 
                     <div class="project-card-title">
                         <div class="project-tag">Fotowoltaika</div>
@@ -5602,7 +5577,7 @@
                         <div class="overlay-tag">Fotowoltaika</div>
                         <h3>Farma solarna 180 paneli</h3>
                         <p>Delikatne czyszczenie paneli PV z pyłu i osadów. Wzrost wydajności o 18% po zabiegu — potwierdzone przez klienta.</p>
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20fotowoltaiki." class="overlay-btn" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20fotowoltaiki." class="overlay-btn" target="_blank">
                             Zapytaj o wycenę
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>
@@ -5611,7 +5586,7 @@
 
                 <!-- Project 3 — Mycie elewacji -->
                 <div class="project-card" data-reveal="up" data-stagger="5">
-                    <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynku dronem — realizacja SkyClean" loading="lazy" decoding="async">
+                    <img src="img/images/drones/Facade_Cleaning_Matching_the_o_Nano_Banana_2_55523.jpg" alt="Mycie elewacji budynku dronem — realizacja SkyClean" loading="lazy" decoding="async">
 
                     <div class="project-card-title">
                         <div class="project-tag">Elewacja</div>
@@ -5622,7 +5597,7 @@
                         <div class="overlay-tag">Elewacja</div>
                         <h3>Biurowiec 45 m wysokości</h3>
                         <p>Mycie elewacji szklanej biurowca bez rusztowań. Oszczędność 60% kosztów w porównaniu z metodą tradycyjną.</p>
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20elewacji." class="overlay-btn" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Interesuje%20mnie%20mycie%20elewacji." class="overlay-btn" target="_blank">
                             Zapytaj o wycenę
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>
@@ -5638,9 +5613,9 @@
     <section class="visual-statement">
         <!-- Parallax background — autoplay when in viewport (Apple approach) -->
         <div class="vs-bg">
-            <img src="Udrone/iot-smart-agriculture-redimensionada.webp" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async" class="vs-poster">
+            <img src="img/images/drones/A_low-angle_fotorrealista_shot_Nano_Banana_2_46942.jpg" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async" class="vs-poster">
             <video muted loop playsinline preload="none" style="display:none;">
-                <source src="video-aerial.mp4" type="video/mp4">
+                <source src="img/video/videoabajo.mp4" type="video/mp4">
             </video>
         </div>
 
@@ -5659,20 +5634,12 @@
                     Tradycyjne metody mycia na wysokości wymagają kosztownych rusztowań, podnośników i narażają pracowników na ryzyko. Nasz dron eliminuje te problemy — działa szybciej, taniej i bezpieczniej.
                 </p>
 
-                <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="vs-cta" target="_blank">
+                <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="vs-cta" target="_blank">
                     Zamów bezpłatną wycenę
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
                     </svg>
                 </a>
-            </div>
-        </div>
-
-        <!-- Text marquee — outline text scrolling -->
-        <div class="vs-marquee">
-            <div class="vs-marquee-track">
-                <span class="vs-marquee-text">&nbsp;&nbsp;DACHY &nbsp; <span class="filled">FOTOWOLTAIKA</span> &nbsp; ELEWACJE &nbsp; <span class="filled">FASADY</span> &nbsp; HALE &nbsp; <span class="filled">KOŚCIOŁY</span> &nbsp; BIUROWCE &nbsp; <span class="filled">MAGAZYNY</span>&nbsp;&nbsp;</span>
-                <span class="vs-marquee-text">&nbsp;&nbsp;DACHY &nbsp; <span class="filled">FOTOWOLTAIKA</span> &nbsp; ELEWACJE &nbsp; <span class="filled">FASADY</span> &nbsp; HALE &nbsp; <span class="filled">KOŚCIOŁY</span> &nbsp; BIUROWCE &nbsp; <span class="filled">MAGAZYNY</span>&nbsp;&nbsp;</span>
             </div>
         </div>
 
@@ -5731,13 +5698,13 @@
                     <!-- Card 1: Rolnictwo / Agriculture -->
                     <div class="industry-card" data-reveal="up" data-stagger="3">
                         <div class="industry-card-image">
-                            <img src="Udrone/agricultural-drones-and-agricultural-crops-2026-01-09-00-18-06-utc.webp" alt="Mycie dronem w rolnictwie" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Panel_1_01_Roof_Cleaning_Match_Nano_Banana_2_54380.jpg" alt="Mycie dronem w rolnictwie" loading="lazy" decoding="async">
                         </div>
                         <div class="industry-card-content">
                             <div class="industry-card-number">01</div>
                             <div class="industry-card-name">ROLNICTWO</div>
                             <div class="industry-card-desc">Mycie silosów, budynków gospodarczych i hal magazynowych. Usuwamy naloty, mchy i zabrudzenia z trudno dostępnych konstrukcji rolniczych.</div>
-                            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Pytam%20o%20mycie%20w%20rolnictwie." class="industry-card-cta" target="_blank">
+                            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Pytam%20o%20mycie%20w%20rolnictwie." class="industry-card-cta" target="_blank">
                                 Zapytaj o wycenę
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -5750,13 +5717,13 @@
                     <!-- Card 2: Energetyka / Energy -->
                     <div class="industry-card" data-reveal="up" data-stagger="4">
                         <div class="industry-card-image">
-                            <img src="Udrone/floating-solar-panels-providing-renewable-energy-2026-01-07-07-09-10-utc.webp" alt="Mycie paneli fotowoltaicznych" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Panel_1_01_Roof_Cleaning_Match_Nano_Banana_2_46113.jpg" alt="Mycie paneli fotowoltaicznych" loading="lazy" decoding="async">
                         </div>
                         <div class="industry-card-content">
                             <div class="industry-card-number">02</div>
                             <div class="industry-card-name">ENERGETYKA</div>
                             <div class="industry-card-desc">Profesjonalne czyszczenie paneli fotowoltaicznych i farm solarnych. Przywracamy pełną wydajność instalacji — bez ryzyka uszkodzeń.</div>
-                            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Pytam%20o%20mycie%20fotowoltaiki." class="industry-card-cta" target="_blank">
+                            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Pytam%20o%20mycie%20fotowoltaiki." class="industry-card-cta" target="_blank">
                                 Zapytaj o wycenę
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -5769,13 +5736,13 @@
                     <!-- Card 3: Budownictwo / Construction -->
                     <div class="industry-card" data-reveal="up" data-stagger="5">
                         <div class="industry-card-image">
-                            <img src="Udrone/new-york-city-june-15-2026-03-11-04-23-43-utc.webp" alt="Mycie elewacji budynków" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Facade_Cleaning_Matching_the_o_Nano_Banana_2_55523.jpg" alt="Mycie elewacji budynków" loading="lazy" decoding="async">
                         </div>
                         <div class="industry-card-content">
                             <div class="industry-card-number">03</div>
                             <div class="industry-card-name">BUDOWNICTWO</div>
                             <div class="industry-card-desc">Mycie elewacji, fasad szklanych i budynków wielokondygnacyjnych. Docieramy do 60 metrów wysokości bez rusztowań i podnośników.</div>
-                            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Pytam%20o%20mycie%20elewacji." class="industry-card-cta" target="_blank">
+                            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Pytam%20o%20mycie%20elewacji." class="industry-card-cta" target="_blank">
                                 Zapytaj o wycenę
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -5788,13 +5755,13 @@
                     <!-- Card 4: Przemysł / Industrial -->
                     <div class="industry-card" data-reveal="up" data-stagger="6">
                         <div class="industry-card-image">
-                            <img src="Udrone/engineers-inspecting-wind-turbine-structure-2026-01-11-11-05-21-utc.webp" alt="Czyszczenie konstrukcji przemysłowych" loading="lazy" decoding="async">
+                            <img src="img/images/drones/Un_primer_plano_macro_de_un_so_Nano_Banana_2_06154.jpg" alt="Czyszczenie konstrukcji przemysłowych" loading="lazy" decoding="async">
                         </div>
                         <div class="industry-card-content">
                             <div class="industry-card-number">04</div>
                             <div class="industry-card-name">PRZEMYSŁ</div>
                             <div class="industry-card-desc">Czyszczenie hal produkcyjnych, wież, turbin wiatrowych i infrastruktury przemysłowej. Bezpiecznie, szybko i bez przestojów.</div>
-                            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Pytam%20o%20mycie%20przemysłowe." class="industry-card-cta" target="_blank">
+                            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Pytam%20o%20mycie%20przemysłowe." class="industry-card-cta" target="_blank">
                                 Zapytaj o wycenę
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -5807,13 +5774,13 @@
                     <!-- Card 5: Mieszkalnictwo / Residential -->
                     <div class="industry-card" data-reveal="up" data-stagger="7">
                         <div class="industry-card-image">
-                            <img src="Udrone/drone-operator-modern-farmer-with-drone-on-agricu-2026-01-07-02-07-42-utc.webp" alt="Mycie dachów domów jednorodzinnych" loading="lazy" decoding="async">
+                            <img src="img/images/drones/A_detailed_realistic_photograp_Nano_Banana_2_20869.jpg" alt="Mycie dachów domów jednorodzinnych" loading="lazy" decoding="async">
                         </div>
                         <div class="industry-card-content">
                             <div class="industry-card-number">05</div>
                             <div class="industry-card-name">MIESZKALNICTWO</div>
                             <div class="industry-card-desc">Mycie dachów, rynien i elewacji domów jednorodzinnych i wspólnot mieszkaniowych. Czysto bez wchodzenia na dach.</div>
-                            <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Pytam%20o%20mycie%20domu." class="industry-card-cta" target="_blank">
+                            <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Pytam%20o%20mycie%20domu." class="industry-card-cta" target="_blank">
                                 Zapytaj o wycenę
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -6104,7 +6071,7 @@
 
             <!-- CTA -->
             <div class="hiw-cta">
-                <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zamówić%20mycie%20dronem." class="hiw-cta-btn" target="_blank">
+                <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zamówić%20mycie%20dronem." class="hiw-cta-btn" target="_blank">
                     Zamów bezpłatną wycenę
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -6199,7 +6166,7 @@
                         <div class="calc-result-label">Szacunkowy koszt</div>
                         <div class="calc-result-price" id="calcPrice">2 500 <small>PLN netto</small></div>
                         <div class="calc-result-note">* Ostateczna cena po bezpłatnej inspekcji obiektu</div>
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Kalkulator%20pokazał%20mi%20wycenę%20—%20chciałbym%20umówić%20inspekcję." class="calc-result-cta" id="calcCta" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Kalkulator%20pokazał%20mi%20wycenę%20—%20chciałbym%20umówić%20inspekcję." class="calc-result-cta" id="calcCta" target="_blank">
                             Zamów bezpłatną inspekcję
                         </a>
                     </div>
@@ -6231,8 +6198,8 @@
                                   fill="rgba(14,165,233,0.05)"
                                   stroke="rgba(14,165,233,0.2)"
                                   stroke-width="1.5"/>
-                            <!-- Inner radius circle (100km) -->
-                            <circle cx="230" cy="175" r="100"
+                            <!-- Inner radius circle (150km) -->
+                            <circle cx="230" cy="175" r="130"
                                     fill="rgba(14,165,233,0.06)"
                                     stroke="rgba(14,165,233,0.15)"
                                     stroke-width="1"
@@ -6273,7 +6240,7 @@
 
                     <div class="sa-radius-badge">
                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                        <span>Zasięg: 100 km od bazy</span>
+                        <span>Zasięg: 150 km od bazy</span>
                     </div>
 
                     <div class="sa-cities">
@@ -6331,7 +6298,7 @@
 
                     <div class="sa-cta">
                         <div class="sa-cta-text">Nie widzisz swojej miejscowości? Zapytaj — dojedziemy!</div>
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20czy%20dojeżdżacie%20do%20mojej%20miejscowości." class="sa-cta-btn" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20czy%20dojeżdżacie%20do%20mojej%20miejscowości." class="sa-cta-btn" target="_blank">
                             Zapytaj o dojazd
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
@@ -6373,7 +6340,7 @@
                             </div>
                             <div class="contact-item-content">
                                 <div class="contact-item-label">Telefon</div>
-                                <div class="contact-item-value"><a href="tel:+48727527037">+48 727 527 037</a></div>
+                                <div class="contact-item-value"><a href="tel:+48880842310">+48 880 842 310</a></div>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -6382,7 +6349,7 @@
                             </div>
                             <div class="contact-item-content">
                                 <div class="contact-item-label">E-mail</div>
-                                <div class="contact-item-value"><a href="mailto:kontakt@skyclean.pl">kontakt@skyclean.pl</a></div>
+                                <div class="contact-item-value"><a href="mailto:skyclean2026@gmail.com">skyclean2026@gmail.com</a></div>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -6420,13 +6387,13 @@
 
                     <div class="contact-quick-btns">
                         <!-- WhatsApp -->
-                        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="contact-quick-btn" target="_blank">
+                        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="contact-quick-btn" target="_blank">
                             <div class="contact-quick-btn-icon whatsapp">
                                 <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                             </div>
                             <div class="contact-quick-btn-text">
                                 <div class="contact-quick-btn-label">WhatsApp</div>
-                                <div class="contact-quick-btn-value">+48 727 527 037</div>
+                                <div class="contact-quick-btn-value">+48 880 842 310</div>
                             </div>
                             <div class="contact-quick-btn-arrow">
                                 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -6434,13 +6401,13 @@
                         </a>
 
                         <!-- Phone -->
-                        <a href="tel:+48727527037" class="contact-quick-btn">
+                        <a href="tel:+48880842310" class="contact-quick-btn">
                             <div class="contact-quick-btn-icon phone">
                                 <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                             </div>
                             <div class="contact-quick-btn-text">
                                 <div class="contact-quick-btn-label">Zadzwoń</div>
-                                <div class="contact-quick-btn-value">+48 727 527 037</div>
+                                <div class="contact-quick-btn-value">+48 880 842 310</div>
                             </div>
                             <div class="contact-quick-btn-arrow">
                                 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -6448,13 +6415,13 @@
                         </a>
 
                         <!-- Email -->
-                        <a href="mailto:kontakt@skyclean.pl" class="contact-quick-btn">
+                        <a href="mailto:skyclean2026@gmail.com" class="contact-quick-btn">
                             <div class="contact-quick-btn-icon email">
                                 <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                             </div>
                             <div class="contact-quick-btn-text">
                                 <div class="contact-quick-btn-label">E-mail</div>
-                                <div class="contact-quick-btn-value">kontakt@skyclean.pl</div>
+                                <div class="contact-quick-btn-value">skyclean2026@gmail.com</div>
                             </div>
                             <div class="contact-quick-btn-arrow">
                                 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -6482,7 +6449,7 @@
 
                     <!-- Brand Column -->
                     <div>
-                        <div class="footer-brand-name">SKY<span>CLEAN</span></div>
+                        <img src="img/images/logo/logosky.png" alt="SkyClean Premium" class="footer-brand-logo">
                         <div class="footer-brand-tagline">Profesjonalne mycie dronem</div>
                         <p class="footer-brand-desc">Czyścimy dachy, fotowoltaikę i elewacje dronem — bez rusztowań, bez drabin. Szybko, bezpiecznie i ekologicznie. Ostrów Wielkopolski i cała Wielkopolska.</p>
                         <div class="footer-socials">
@@ -6535,11 +6502,11 @@
                         </div>
                         <div class="footer-contact-item">
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                            <a href="tel:+48727527037">+48 727 527 037</a>
+                            <a href="tel:+48880842310">+48 880 842 310</a>
                         </div>
                         <div class="footer-contact-item">
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                            <a href="mailto:kontakt@skyclean.pl">kontakt@skyclean.pl</a>
+                            <a href="mailto:skyclean2026@gmail.com">skyclean2026@gmail.com</a>
                         </div>
                         <div class="footer-contact-item">
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -6565,12 +6532,12 @@
     <!-- FLOATING CTA (WhatsApp + Phone)                     -->
     <!-- ================================================== -->
     <div class="floating-cta">
-        <a href="https://wa.me/48727527037?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="float-btn whatsapp" target="_blank" title="WhatsApp">
+        <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20dronem." class="float-btn whatsapp" target="_blank" title="WhatsApp">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
             </svg>
         </a>
-        <a href="tel:+48727527037" class="float-btn phone" title="Zadzwoń">
+        <a href="tel:+48880842310" class="float-btn phone" title="Zadzwoń">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
             </svg>
@@ -6774,7 +6741,7 @@
 
                     // Open WhatsApp after a moment
                     setTimeout(() => {
-                        window.open(`https://wa.me/48727527037?text=${encodeURIComponent(msg)}`, '_blank');
+                        window.open(`https://wa.me/48880842310?text=${encodeURIComponent(msg)}`, '_blank');
                     }, 1500);
 
                     // Auto-close popup after 4 seconds
@@ -6846,8 +6813,8 @@
 
         // All infinite-animation elements: pause when off-screen
         document.querySelectorAll(
-            '.hero-drone-wrapper img, .marquee-track, .trust-track, ' +
-            '.scroll-line, .vs-marquee-track, .sa-pulse-dot, ' +
+            '.hero-drone-wrapper img, .wave-animated, .trust-track, ' +
+            '.scroll-line, .sa-pulse-dot, ' +
             '.popup-card'
         ).forEach(el => {
             animPauseObserver.observe(el);
@@ -7070,7 +7037,7 @@
             if (calcCta) {
                 const serviceNames = { dach: 'dachu', fotowoltaika: 'fotowoltaiki', elewacja: 'elewacji', fasada: 'fasady', silos: 'silosu' };
                 const msg = encodeURIComponent(`Dzień dobry! Kalkulator oszacował mycie ${serviceNames[service]} (${area} m²) na ~${formatted} PLN netto. Chciałbym umówić bezpłatną inspekcję.`);
-                calcCta.href = `https://wa.me/48727527037?text=${msg}`;
+                calcCta.href = `https://wa.me/48880842310?text=${msg}`;
             }
         }
 
