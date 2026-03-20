@@ -29,7 +29,7 @@
 
     <!-- Preload critical hero assets (poster shows instantly, video fades in after) -->
     <link rel="preload" as="image" href="img/images/projects/drone-spray-sky.jpg">
-    <link rel="preload" as="image" href="img/images/logo/DSC01472.png">
+    <link rel="preload" as="image" href="img/images/png/C10-dron-kep-update-2048x1028.png">
 
     <!-- Lenis loaded at bottom of body before init script -->
 
@@ -2104,6 +2104,162 @@
             }
             .about-badge-number {
                 font-size: 42px;
+            }
+        }
+
+        /* ================================================== */
+        /* KÄRCHER / MANUAL CLEANING SECTION                   */
+        /* ================================================== */
+        .karcher-section {
+            padding: var(--section-padding) 0;
+            background: var(--bg-dark-2);
+        }
+
+        .karcher-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        /* Image layout — 1 big + 2 small stacked */
+        .karcher-images {
+            position: relative;
+        }
+
+        .karcher-mosaic {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .karcher-mosaic-img {
+            overflow: hidden;
+        }
+
+        .karcher-mosaic-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .karcher-mosaic-img.karcher-main {
+            grid-row: 1 / 3;
+            aspect-ratio: auto;
+        }
+
+        .karcher-mosaic-img:not(.karcher-main) {
+            aspect-ratio: 4/3;
+        }
+
+        /* Kärcher badge */
+        .karcher-badge {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            z-index: 3;
+            background: var(--amber);
+            color: #000;
+            padding: 16px 22px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .karcher-badge-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .karcher-badge-label {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Content side */
+        .karcher-content {
+            padding-left: 16px;
+        }
+
+        .karcher-content .section-subtitle {
+            margin-bottom: 16px;
+        }
+
+        .karcher-content .section-title {
+            margin-bottom: 20px;
+        }
+
+        .karcher-description {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        /* Feature cards */
+        .karcher-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .karcher-feature {
+            padding: 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .karcher-feature:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(56, 189, 248, 0.15);
+        }
+
+        .karcher-feature-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--amber);
+            margin-bottom: 10px;
+        }
+
+        .karcher-feature-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .karcher-feature-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Responsive Kärcher */
+        @media (max-width: 991px) {
+            .karcher-grid {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+            .karcher-content {
+                padding-left: 0;
+            }
+            .karcher-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .karcher-mosaic {
+                gap: 8px;
             }
         }
 
@@ -4785,7 +4941,7 @@
                 max-width: 90%;
             }
             /* Section spacing tighter on mobile */
-            .services, .about, .projects, .industries,
+            .services, .about, .karcher-section, .projects, .industries,
             .testimonials, .how-it-works, .calculator,
             .service-area, .contact {
                 padding: 60px 0;
@@ -5060,6 +5216,7 @@
                 <li><a href="#hero">Strona główna</a></li>
                 <li><a href="#uslugi">Usługi</a></li>
                 <li><a href="#o-nas">O nas</a></li>
+                <li><a href="#mycie-reczne">Mycie ręczne</a></li>
                 <li><a href="#realizacje">Realizacje</a></li>
                 <li><a href="#kalkulator">Wycena</a></li>
                 <li><a href="#kontakt">Kontakt</a></li>
@@ -5235,6 +5392,7 @@
             <li><a href="#hero" onclick="toggleMobileMenu()">Strona główna</a></li>
             <li><a href="#uslugi" onclick="toggleMobileMenu()">Usługi</a></li>
             <li><a href="#o-nas" onclick="toggleMobileMenu()">O nas</a></li>
+            <li><a href="#mycie-reczne" onclick="toggleMobileMenu()">Mycie ręczne</a></li>
             <li><a href="#realizacje" onclick="toggleMobileMenu()">Realizacje</a></li>
             <li><a href="#kalkulator" onclick="toggleMobileMenu()">Wycena</a></li>
             <li><a href="#kontakt" onclick="toggleMobileMenu()">Kontakt</a></li>
@@ -5294,7 +5452,7 @@
 
         <!-- Dron AGZ flotante en hero -->
         <div class="hero-drone-wrapper">
-            <img src="img/images/logo/DSC01472.png" alt="Dron AGZ SkyClean Premium — profesjonalne mycie dronem" fetchpriority="high" decoding="async">
+            <img src="img/images/png/C10-dron-kep-update-2048x1028.png" alt="Dron C10 SkyClean Premium — profesjonalne mycie dronem" fetchpriority="high" decoding="async">
         </div>
 
         <!-- Wave divider — smooth section separator -->
@@ -5581,7 +5739,7 @@
                             <img src="img/images/projects/operators-drone-setup.webp" alt="Przygotowanie drona do pracy przez zespół SkyClean" loading="lazy" decoding="async">
                         </div>
                         <div class="about-mosaic-img">
-                            <img src="img/images/drones/drone-arm-led-detail.jpg" alt="Technologia AGZ — brazo de fibra de carbono z LED" loading="lazy" decoding="async">
+                            <img src="img/images/drones/C10-1.webp" alt="Dron czyszczący fasadę budynku" loading="lazy" decoding="async">
                         </div>
                         <div class="about-mosaic-img">
                             <img src="img/images/drones/drone-nozzle-closeup.jpg" alt="Przygotowanie drona do pracy" loading="lazy" decoding="async">
@@ -5636,6 +5794,84 @@
                         </svg>
                     </a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================== -->
+    <!-- KÄRCHER / MANUAL CLEANING SECTION                   -->
+    <!-- ================================================== -->
+    <section class="karcher-section" id="mycie-reczne">
+        <div class="container">
+            <div class="karcher-grid">
+
+                <!-- Left: Content (reversed layout vs About for visual variety) -->
+                <div class="karcher-content about-reveal" data-reveal="left">
+                    <div class="section-subtitle">Mycie ręczne</div>
+                    <h2 class="section-title">Profesjonalne mycie <span class="accent">ciśnieniowe</span></h2>
+                    <p class="karcher-description">
+                        Oprócz mycia dronem oferujemy również profesjonalne czyszczenie ręczne z użyciem myjki ciśnieniowej Kärcher HDS 5/15 U z podgrzewaniem wody. Idealne rozwiązanie do elewacji, chodników, parkingów, ogrodzeń i powierzchni na poziomie gruntu.
+                    </p>
+
+                    <div class="karcher-features">
+                        <div class="karcher-feature">
+                            <div class="karcher-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg>
+                            </div>
+                            <div class="karcher-feature-title">Gorąca woda</div>
+                            <div class="karcher-feature-desc">Do 150°C — usuwa tłuszcz, mech i uporczywe zabrudzenia</div>
+                        </div>
+                        <div class="karcher-feature">
+                            <div class="karcher-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </div>
+                            <div class="karcher-feature-title">Elewacje i chodniki</div>
+                            <div class="karcher-feature-desc">Perfekcyjne czyszczenie na poziomie gruntu</div>
+                        </div>
+                        <div class="karcher-feature">
+                            <div class="karcher-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <div class="karcher-feature-title">Bezpieczeństwo</div>
+                            <div class="karcher-feature-desc">Środki biodegradowalne, bezpieczne dla otoczenia</div>
+                        </div>
+                        <div class="karcher-feature">
+                            <div class="karcher-feature-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="karcher-feature-title">Szybka realizacja</div>
+                            <div class="karcher-feature-desc">Mobilny sprzęt gotowy do pracy w ciągu godzin</div>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/48880842310?text=Dzień%20dobry!%20Chciałbym%20zapytać%20o%20wycenę%20mycia%20ciśnieniowego." class="about-cta" target="_blank">
+                        Zapytaj o wycenę
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Right: Kärcher images -->
+                <div class="karcher-images about-reveal" data-reveal="right">
+                    <div class="karcher-mosaic">
+                        <div class="karcher-mosaic-img karcher-main">
+                            <img src="img/images/karcher/alfred-kaercher-heisswasser-hochdruckreiniger-hds-515-u-hauptbild_1920x1920.jpg" alt="Kärcher HDS 5/15 U — myjka ciśnieniowa z podgrzewaniem wody" loading="lazy" decoding="async">
+                        </div>
+                        <div class="karcher-mosaic-img">
+                            <img src="img/images/karcher/alfred-kaercher-heisswasser-hochdruckreiniger-hds-515-ux-bild4_1000x666.jpg" alt="Profesjonalne mycie ciśnieniowe w terenie" loading="lazy" decoding="async">
+                        </div>
+                        <div class="karcher-mosaic-img">
+                            <img src="img/images/karcher/alfred-kaercher-heisswasser-hochdruckreiniger-hds-515-ux-bild3_502x502.jpg" alt="Kärcher HDS 5/15 U w transporcie" loading="lazy" decoding="async">
+                        </div>
+                    </div>
+                    <!-- Badge -->
+                    <div class="karcher-badge">
+                        <div class="karcher-badge-icon">🔥</div>
+                        <div class="karcher-badge-label">Gorąca<br>woda</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -5720,8 +5956,8 @@
     <section class="visual-statement">
         <!-- Parallax background — autoplay when in viewport (Apple approach) -->
         <div class="vs-bg">
-            <video muted loop playsinline preload="none" style="display:none;">
-                <source src="img/video/video-aerial.mp4" type="video/mp4">
+            <video id="vsVideo" muted loop playsinline preload="none" style="display:none;">
+                <source src="img/video/dronlimpiando.mp4" type="video/mp4">
             </video>
             <img src="img/images/drones/drone-solar-panel-sunset.jpg" alt="Dron profesjonalny w powietrzu" loading="lazy" decoding="async" class="vs-poster">
         </div>
@@ -6592,6 +6828,7 @@
                         <div class="footer-col-title">NAWIGACJA</div>
                         <ul class="footer-links">
                             <li><a href="#o-nas">O nas</a></li>
+                            <li><a href="#mycie-reczne">Mycie ręczne</a></li>
                             <li><a href="#realizacje">Realizacje</a></li>
                             <li><a href="#industries">Branże</a></li>
                             <li><a href="#opinie">Opinie</a></li>
@@ -7013,7 +7250,7 @@
 
             // Add section-enter to major content sections
             document.querySelectorAll(
-                '.services .container, .about .container, .projects .container, ' +
+                '.services .container, .about .container, .karcher-section .container, .projects .container, ' +
                 '.industries .container, .testimonials .container, ' +
                 '.how-it-works .container, .calculator .container, ' +
                 '.service-area .container, .contact .container'
@@ -7175,6 +7412,14 @@
                 vsVideo.addEventListener('playing', () => {
                     showVideo(vsVideo);
                 }, { once: true });
+
+                // Limit playback to first 15 seconds (loop back to 0)
+                const VS_MAX_TIME = 15;
+                vsVideo.addEventListener('timeupdate', () => {
+                    if (vsVideo.currentTime >= VS_MAX_TIME) {
+                        vsVideo.currentTime = 0;
+                    }
+                });
 
                 const vsVideoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
