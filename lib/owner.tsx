@@ -8,6 +8,8 @@ export function OwnerLine() {
     site.nip && `NIP ${site.nip}`,
     site.krs && `KRS ${site.krs}`,
     site.regon && `REGON ${site.regon}`,
+    site.court && `sąd rejestrowy: ${site.court}`,
+    site.capital && `kapitał zakładowy ${site.capital}`,
   ].filter(Boolean);
   return <>{parts.join(", ")}</>;
 }

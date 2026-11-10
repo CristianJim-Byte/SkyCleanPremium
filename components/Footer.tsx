@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 import { services } from "@/lib/services";
 
 export default function Footer() {
-  const legal = [site.legalName, site.address, site.nip && `NIP ${site.nip}`, site.krs && `KRS ${site.krs}`, site.regon && `REGON ${site.regon}`].filter(Boolean);
+  const legal = [site.legalName, site.address, site.nip && `NIP ${site.nip}`, site.krs && `KRS ${site.krs}`, site.regon && `REGON ${site.regon}`, site.capital && `kapitał zakładowy ${site.capital}`].filter(Boolean);
   return (
     <footer className="bg-carbon text-white">
       <div className="shell grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
@@ -42,7 +42,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-white/10">
         <div className="shell flex flex-col gap-3 py-6 text-sm text-white/60 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} SkyClean{legal.length ? ` · ${legal.join(", ")}` : ""}</p>
+          <p className="max-w-3xl">© {new Date().getFullYear()} {legal.length ? legal.join(", ") : "SkyClean"}{site.court ? `. ${site.court}.` : ""}</p>
           <p className="flex gap-6">
             <Link className="hover:text-white" href="/polityka-prywatnosci">Polityka prywatności</Link>
             <Link className="hover:text-white" href="/regulamin">Regulamin</Link>

@@ -10,12 +10,14 @@ export const site = {
   hours: "poniedziałek – sobota, 7:00 – 19:00",
   range: "do 150 km od Ostrowa Wielkopolskiego",
   towns: ["Kalisz", "Pleszew", "Jarocin", "Ostrzeszów", "Kępno", "Wieruszów", "Konin", "Poznań", "Gniezno"],
-  // Do uzupełnienia danymi od klienta (zdjęcie z NIP i KRS):
-  legalName: "",
-  address: "",
-  nip: "",
-  krs: "",
-  regon: "",
+  // Z odpisu KRS (stan na 15.01.2026)
+  legalName: "SkyClean spółka z ograniczoną odpowiedzialnością",
+  address: "ul. Perłowa 2, 63-410 Gorzyce Wielkie",
+  nip: "6222869368",
+  krs: "0001216424",
+  regon: "543719104",
+  court: "Sąd Rejonowy Poznań – Nowe Miasto i Wilda w Poznaniu, IX Wydział Gospodarczy Krajowego Rejestru Sądowego",
+  capital: "5 000,00 zł",
   facebook: "https://www.facebook.com/p/SkyClean-61585770664301/",
   googleProfile: "",
 };

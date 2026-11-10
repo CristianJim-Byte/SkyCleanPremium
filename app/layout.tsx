@@ -46,7 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     telephone: site.phone,
     email: site.email,
     image: `${site.url}/opengraph-image.jpg`,
-    address: { "@type": "PostalAddress", addressLocality: site.city, addressRegion: "wielkopolskie", addressCountry: "PL" },
+    legalName: site.legalName,
+    taxID: site.nip,
+    address: { "@type": "PostalAddress", streetAddress: "ul. Perłowa 2", postalCode: "63-410", addressLocality: "Gorzyce Wielkie", addressRegion: "wielkopolskie", addressCountry: "PL" },
     areaServed: [site.city, ...site.towns],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
