@@ -13,7 +13,8 @@ npm run dev
 
 | Zmienna | Do czego |
 |---|---|
-| `RESEND_API_KEY` | Wysyłka formularza kontaktowego e-mailem (resend.com). Bez niej formularz pokazuje błąd i kieruje na telefon/WhatsApp. |
+| `NEXT_PUBLIC_WEB3FORMS_KEY` | **Zalecane.** Klucz Web3Forms utworzony na adres klienta: formularz wysyła wiadomości prosto na jego skrzynkę, bez konfiguracji domeny. |
+| `RESEND_API_KEY` | Wysyłka formularza kontaktowego e-mailem (resend.com). Alternatywa dla Web3Forms (wymaga weryfikacji domeny w DNS). Bez żadnego z kluczy formularz pokazuje błąd i kieruje na telefon/WhatsApp. |
 | `CONTACT_TO` | Adres odbiorcy zapytań (domyślnie skyclean2026@gmail.com). |
 | `CONTACT_FROM` | Nadawca, np. `SkyClean <formularz@sky-clean.pl>` po weryfikacji domeny w Resend. |
 | `NEXT_PUBLIC_GA_ID` | Identyfikator Google Analytics (G-XXXX). Ładuje się dopiero po zgodzie na cookie. |

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 const topics = ["Usługi DDD (szkodniki, dezynfekcja)", "Mycie kostki brukowej", "Mycie elewacji", "Mycie dachu", "Mycie fotowoltaiki", "Inne"];
 
 export default function ContactForm({ topic }: { topic?: string }) {
@@ -16,9 +17,31 @@ export default function ContactForm({ topic }: { topic?: string }) {
     setState("sending");
     setError("");
     try {
-      const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Nie udało się wysłać wiadomości.");
+      if (WEB3FORMS_KEY) {
+        // Web3Forms: wysyłka prosto z przeglądarki na skrzynkę klienta (klucz jest publiczny z założenia).
+        if (data.company_url) { setState("sent"); form.reset(); return; }
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject: `Zapytanie ze strony: ${data.topic} — ${data.name}`,
+            from_name: "SkyClean — formularz",
+            "Imię i nazwisko": data.name,
+            Telefon: data.phone,
+            "E-mail": data.email || "—",
+            Temat: data.topic,
+            Wiadomość: data.message,
+            ...(data.email ? { replyto: data.email } : {}),
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) throw new Error("Nie udało się wysłać wiadomości.");
+      } else {
+        const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.error || "Nie udało się wysłać wiadomości.");
+      }
       setState("sent");
       form.reset();
     } catch (err) {
