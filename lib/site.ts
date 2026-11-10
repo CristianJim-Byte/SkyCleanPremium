@@ -16,7 +16,7 @@ export const site = {
   nip: "",
   krs: "",
   regon: "",
-  facebook: "",
+  facebook: "https://www.facebook.com/p/SkyClean-61585770664301/",
   googleProfile: "",
 };
 
