@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Consent from "@/components/Consent";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="tresc" className="flex-1">{children}</main>
         <Footer />
+        <SmoothScroll />
         <Consent />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
