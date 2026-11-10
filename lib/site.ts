@@ -18,6 +18,8 @@ export const site = {
   regon: "543719104",
   court: "Sąd Rejonowy Poznań – Nowe Miasto i Wilda w Poznaniu, IX Wydział Gospodarczy Krajowego Rejestru Sądowego",
   capital: "5 000,00 zł",
+  // Klucz Web3Forms (publiczny z założenia): wiadomości z formularza trafiają na skyclean2026@gmail.com
+  web3formsKey: "eb8fa4ea-fb57-42a3-918e-b6b347aefcfa",
   facebook: "https://www.facebook.com/p/SkyClean-61585770664301/",
   googleProfile: "",
 };

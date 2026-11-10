@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
-const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || site.web3formsKey;
 const topics = ["Usługi DDD (szkodniki, dezynfekcja)", "Mycie kostki brukowej", "Mycie elewacji", "Mycie dachu", "Mycie fotowoltaiki", "Inne"];
 
 export default function ContactForm({ topic }: { topic?: string }) {
