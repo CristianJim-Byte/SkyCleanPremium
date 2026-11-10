@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       opens: "07:00",
       closes: "19:00",
     },
-    ...(site.facebook ? { sameAs: [site.facebook] } : {}),
+    sameAs: [site.facebook, site.googleProfile].filter(Boolean),
   };
   // WebSite: nombre del sitio que Google muestra encima del resultado
   const jsonLd = {
