@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --carbon: #1d2124;
+  --carbon-2: #262b2f;
+  --green: #198a4a;
+  --green-deep: #0f5c30;
+  --green-light: #3fbf78;
+  --mist: #eef3ef;
+  --line: #d3dcd5;
+  --ink: #171a1c;
+  --muted: #55605a;
+}
+
+@theme inline {
+  --color-carbon: var(--carbon);
+  --color-carbon-2: var(--carbon-2);
+  --color-green: var(--green);
+  --color-green-deep: var(--green-deep);
+  --color-green-light: var(--green-light);
+  --color-mist: var(--mist);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+body { background: #fff; color: var(--ink); font-family: var(--font-archivo), system-ui, sans-serif; }
+
+/* Nagłówki jak w logo: szerokie i ciężkie */
+.display { font-stretch: 112%; font-weight: 800; letter-spacing: -0.015em; line-height: 1.04; text-wrap: balance; }
+.wide { font-stretch: 112%; font-weight: 700; }
+p, li { text-wrap: pretty; }
+
+:focus-visible { outline: 3px solid var(--green-light); outline-offset: 3px; border-radius: 2px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 3rem; padding: .7rem 1.4rem; border-radius: .5rem; font-weight: 700; font-stretch: 105%; transition: background-color .15s, color .15s, border-color .15s; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: var(--green-deep); }
+.btn-white { background: #fff; color: var(--carbon); }
+.btn-white:hover { background: var(--mist); }
+.btn-ghost { border: 2px solid rgba(255,255,255,.55); color: #fff; }
+.btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+.btn-outline { border: 2px solid var(--carbon); color: var(--carbon); }
+.btn-outline:hover { background: var(--carbon); color: #fff; }
+
+.shell { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1.25rem; }
+@media (min-width: 768px) { .shell { padding-inline: 2rem; } }
+
+/* Ukośna granica z banera klienta */
+.hero-cut { clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%); }
+.hero-edge { clip-path: polygon(9% 0, calc(9% + 7px) 0, 7px 100%, 0 100%); background: var(--green); }
+@media (max-width: 1023px) { .hero-cut { clip-path: none; } .hero-edge { display: none; } }
+
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .faq-plus { transform: rotate(45deg); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
