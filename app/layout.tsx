@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       opens: "07:00",
       closes: "19:00",
     },
-    ...(site.facebook ? { sameAs: [site.facebook] } : {}),
+    sameAs: [site.facebook, site.googleProfile].filter(Boolean),
   };
   return (
     <html lang="pl" className={`${archivo.variable} antialiased`}>

@@ -37,6 +37,7 @@ export default function Footer() {
             <li>{site.city}</li>
             <li>{site.hours}</li>
             {site.facebook && <li><a className="hover:text-white" href={site.facebook} rel="noopener">Facebook</a></li>}
+            {site.googleProfile && <li><a className="hover:text-white" href={site.googleProfile} rel="noopener">Profil w Google</a></li>}
           </ul>
         </div>
       </div>

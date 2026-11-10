@@ -21,7 +21,7 @@ export const site = {
   // Klucz Web3Forms (publiczny z założenia): wiadomości z formularza trafiają na skyclean2026@gmail.com
   web3formsKey: "eb8fa4ea-fb57-42a3-918e-b6b347aefcfa",
   facebook: "https://www.facebook.com/p/SkyClean-61585770664301/",
-  googleProfile: "",
+  googleProfile: "https://www.google.com/search?kgmid=/g/11yzqhbvph&q=SkyClean+sp%C3%B3%C5%82ka+z+ograniczon%C4%85+odpowiedzialno%C5%9Bci%C4%85",
 };
 
 export const nav = [

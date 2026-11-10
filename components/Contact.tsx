@@ -12,6 +12,7 @@ export default function Contact({ topic, title = "Zapytaj o bezpłatną wycenę"
             <a href={site.whatsapp} className="btn btn-green">Napisz na WhatsApp</a>
             <a href={site.phoneHref} className="btn btn-outline">{site.phone}</a>
             {site.facebook && <a href={site.facebook} rel="noopener" className="btn btn-outline">Facebook</a>}
+            {site.googleProfile && <a href={site.googleProfile} rel="noopener" className="btn btn-outline">Profil w Google</a>}
           </div>
           <dl className="mt-10 grid gap-5 text-base">
             <div><dt className="text-sm text-muted">E-mail</dt><dd className="font-semibold"><a className="hover:text-green-deep" href={`mailto:${site.email}`}>{site.email}</a></dd></div>
