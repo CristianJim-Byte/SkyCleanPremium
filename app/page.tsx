@@ -23,13 +23,19 @@ export default function Home() {
       <section className="relative bg-carbon text-white">
         <h1 className="sr-only">SkyClean — ochrona przed szkodnikami oraz mycie ciśnieniowe i parowe w Ostrowie Wielkopolskim</h1>
         <div className="grid lg:min-h-[min(46rem,calc(100vh-4.5rem))] lg:grid-cols-2">
-          <div className="flex flex-col justify-center px-5 py-16 md:px-8 lg:py-20 lg:pl-[max(2rem,calc((100vw-76rem)/2+2rem))] lg:pr-16">
+          <div className="relative flex flex-col justify-center overflow-hidden px-5 py-16 md:px-8 lg:py-20 lg:pl-[max(2rem,calc((100vw-76rem)/2+2rem))] lg:pr-16">
+            <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline poster="/media/hero-ddd.jpg" preload="metadata" aria-hidden="true">
+              <source src="/media/hero-ddd.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-r from-carbon/90 via-carbon/75 to-carbon/50" aria-hidden="true" />
+            <div className="relative">
             <p className="text-green-light">Dezynsekcja, deratyzacja, dezynfekcja</p>
             <p className="display mt-3 text-[2.7rem] sm:text-6xl xl:text-7xl">Ochrona przed szkodnikami</p>
             <p className="mt-6 max-w-md text-lg text-white/75">Owady, gryzonie, kuny, ozonowanie i monitoring fotopułapkami. Dla domów i firm, z bezpłatną wyceną.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/uslugi/ddd" className="btn btn-green">Zobacz usługi DDD</Link>
               <a href={site.whatsapp} className="btn btn-ghost">Napisz na WhatsApp</a>
+            </div>
             </div>
           </div>
           <div className="relative min-h-[26rem] lg:min-h-0">
