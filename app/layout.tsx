@@ -38,11 +38,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const jsonLd = {
-    "@context": "https://schema.org",
+  const business = {
     "@type": "LocalBusiness",
+    "@id": `${site.url}/#firma`,
     name: site.name,
     url: site.url,
+    logo: `${site.url}/brand/icon-512.png`,
     telephone: site.phone,
     email: site.email,
     image: `${site.url}/opengraph-image.jpg`,
@@ -57,6 +58,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       closes: "19:00",
     },
     sameAs: [site.facebook, site.googleProfile].filter(Boolean),
+  };
+  // WebSite: nombre del sitio que Google muestra encima del resultado
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", "@id": `${site.url}/#website`, name: "SkyClean", alternateName: ["Sky Clean", "sky-clean.pl"], url: `${site.url}/`, inLanguage: "pl-PL", publisher: { "@id": `${site.url}/#firma` } },
+      business,
+    ],
   };
   return (
     <html lang="pl" className={`${archivo.variable} antialiased`}>
